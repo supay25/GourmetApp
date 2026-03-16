@@ -1,34 +1,43 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { CartProvider } from "./context/CartContext";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-import Productos from "./pages/Productos";
-import Contacto from "./pages/Contacto";
-import Carrito from "./pages/Carrito";
-import Checkout from "./pages/Checkout";
-import Sinpe from "./pages/Sinpe";
-import Confirmacion from "./pages/Confirmacion";
-import Footer from './components/Footer';
-import "./style.css";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
+import AdminRoute from './components/AdminRoute';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import Productos from './pages/Productos';
+import Contacto from './pages/Contacto';
+import Carrito from './pages/Carrito';
+import Checkout from './pages/Checkout';
+import Sinpe from './pages/Sinpe';
+import Confirmacion from './pages/Confirmacion';
+import AdminLogin from './pages/admin/AdminLogin';
+import './style.css';
 
 function App() {
   return (
     <BrowserRouter>
-      <CartProvider>
-        <ScrollToTop />
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/productos" element={<Productos />} />
-          <Route path="/contacto" element={<Contacto />} />
-          <Route path="/carrito" element={<Carrito />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/pago" element={<Sinpe />} />
-          <Route path="/confirmacion" element={<Confirmacion />} />
-        </Routes>
-        <Footer />
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
+            <Route path="/productos" element={<><Navbar /><Productos /><Footer /></>} />
+            <Route path="/contacto" element={<><Navbar /><Contacto /><Footer /></>} />
+            <Route path="/carrito" element={<><Navbar /><Carrito /><Footer /></>} />
+            <Route path="/checkout" element={<><Navbar /><Checkout /></>} />
+            <Route path="/pago" element={<Sinpe />} />
+            <Route path="/confirmacion" element={<Confirmacion />} />
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/*" element={
+              <AdminRoute>
+                <div>Dashboard próximamente</div>
+              </AdminRoute>
+            } />
+          </Routes>
+        </CartProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
