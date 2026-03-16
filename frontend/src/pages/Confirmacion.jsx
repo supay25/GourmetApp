@@ -20,26 +20,23 @@ export default function Confirmacion() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "120px 48px",
+        padding: "100px 20px 80px",
       }}
     >
-      <div
-        style={{ maxWidth: 600, width: "100%", textAlign: "center" }}
-        className="confirm-wrapper"
-      >
-        {/* Check animado */}
+      <div className="confirm-wrapper">
+        {/* Check */}
         <div
           style={{
-            width: 80,
-            height: 80,
+            width: 72,
+            height: 72,
             borderRadius: "50%",
             background: "rgba(240,73,63,0.1)",
             border: "2px solid rgba(240,73,63,0.3)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            margin: "0 auto 32px",
-            fontSize: "2rem",
+            margin: "0 auto 28px",
+            fontSize: "1.8rem",
           }}
         >
           ✓
@@ -63,11 +60,11 @@ export default function Confirmacion() {
           style={{
             fontFamily: "Montserrat",
             fontWeight: 900,
-            fontSize: "clamp(2rem, 4vw, 3.5rem)",
+            fontSize: "clamp(1.8rem, 5vw, 3.5rem)",
             letterSpacing: "-0.04em",
             color: "#eeeeee",
             lineHeight: 0.95,
-            marginBottom: 24,
+            marginBottom: 20,
           }}
         >
           ¡GRACIAS POR
@@ -79,10 +76,10 @@ export default function Confirmacion() {
           style={{
             fontFamily: "Poppins",
             fontWeight: 300,
-            fontSize: "1rem",
+            fontSize: "0.95rem",
             color: "rgba(238,238,238,0.55)",
             lineHeight: 1.8,
-            marginBottom: 40,
+            marginBottom: 32,
           }}
         >
           Hemos recibido tu pedido y estamos esperando la confirmación del pago.
@@ -91,16 +88,7 @@ export default function Confirmacion() {
         </p>
 
         {/* Número de pedido */}
-        <div className="confirm-numero"
-          style={{
-            background: "#272727",
-            border: "1px solid rgba(238,238,238,0.07)",
-            borderRadius: 6,
-            padding: "24px 32px",
-            marginBottom: 32,
-            display: "inline-block",
-          }}
-        >
+        <div className="confirm-numero">
           <p
             style={{
               fontFamily: "Montserrat",
@@ -117,7 +105,7 @@ export default function Confirmacion() {
             style={{
               fontFamily: "Montserrat",
               fontWeight: 900,
-              fontSize: "1.5rem",
+              fontSize: "1.4rem",
               color: "#f0493f",
               letterSpacing: "0.05em",
             }}
@@ -127,16 +115,7 @@ export default function Confirmacion() {
         </div>
 
         {/* Resumen */}
-        <div className="confirm-resumen"
-          style={{
-            background: "#272727",
-            border: "1px solid rgba(238,238,238,0.05)",
-            borderRadius: 6,
-            padding: "24px 32px",
-            marginBottom: 40,
-            textAlign: "left",
-          }}
-        >
+        <div className="confirm-resumen">
           <p
             style={{
               fontFamily: "Montserrat",
@@ -163,7 +142,7 @@ export default function Confirmacion() {
               <span
                 style={{
                   fontFamily: "Poppins",
-                  fontSize: "0.9rem",
+                  fontSize: "0.88rem",
                   color: "rgba(238,238,238,0.7)",
                 }}
               >
@@ -176,7 +155,7 @@ export default function Confirmacion() {
                 style={{
                   fontFamily: "Montserrat",
                   fontWeight: 600,
-                  fontSize: "0.9rem",
+                  fontSize: "0.88rem",
                   color: "#eeeeee",
                 }}
               >
@@ -189,7 +168,7 @@ export default function Confirmacion() {
             style={{
               height: 1,
               background: "rgba(238,238,238,0.07)",
-              margin: "16px 0",
+              margin: "14px 0",
             }}
           />
 
@@ -231,6 +210,7 @@ export default function Confirmacion() {
             textTransform: "uppercase",
             cursor: "pointer",
             transition: "all 0.2s",
+            width: "100%",
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.borderColor = "rgba(238,238,238,0.3)";
@@ -246,11 +226,34 @@ export default function Confirmacion() {
       </div>
 
       <style>{`
+  .confirm-wrapper {
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+  }
+  .confirm-numero {
+    background: #272727;
+    border: 1px solid rgba(238,238,238,0.07);
+    border-radius: 6px;
+    padding: 20px 28px;
+    margin-bottom: 20px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+  }
+  .confirm-resumen {
+    background: #272727;
+    border: 1px solid rgba(238,238,238,0.05);
+    border-radius: 6px;
+    padding: 20px 28px;
+    margin-bottom: 32px;
+    text-align: left;
+    box-sizing: border-box;
+  }
   @media (max-width: 600px) {
-    .confirm-wrapper { padding: 0 !important; }
-    .confirm-wrapper h1 { font-size: 2rem !important; }
-    .confirm-numero { padding: 20px !important; display: block !important; width: 100% !important; box-sizing: border-box !important; }
-    .confirm-resumen { padding: 20px !important; }
+    .confirm-numero { padding: 16px 20px; }
+    .confirm-resumen { padding: 16px 20px; }
   }
 `}</style>
     </section>
