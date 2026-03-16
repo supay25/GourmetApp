@@ -1,13 +1,6 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import products from '../data/products';
-
-const banners = [
-  '/images/headers/home-banner - 1.png',
-  '/images/headers/home-banner - 2.png',
-  '/images/headers/home-banner - 3.png',
-];
 
 const testimonios = [
   { nombre: 'Andrea M.', texto: 'El pesto tradicional es increíble, lo uso en todo. Ya pedí tres veces y no me decepciona.', estrellas: 5 },
@@ -25,14 +18,6 @@ export default function Home() {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const destacados = products.slice(0, 4);
-  const [heroBg, setHeroBg] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setHeroBg(prev => (prev + 1) % banners.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <>
@@ -42,52 +27,44 @@ export default function Home() {
         display: 'flex', alignItems: 'center',
         overflow: 'hidden', background: '#202020',
       }}>
-        {banners.map((banner, i) => (
-          <div key={i} style={{
-            position: 'absolute', inset: 0, zIndex: 0,
-            backgroundImage: `url(${banner})`,
-            backgroundSize: 'cover', backgroundPosition: 'center',
-            opacity: heroBg === i ? 1 : 0,
-            transition: 'opacity 1.2s ease-in-out',
-          }} />
-        ))}
+        {/* Fondo estático */}
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 0,
+          backgroundImage: 'url(/images/headers/home-banner - 1.png)',
+          backgroundSize: 'cover', backgroundPosition: 'center',
+        }} />
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1,
-          background: 'rgba(20,20,20,0.78)',
+          background: 'rgba(20,20,20,0.75)',
         }} />
 
-        <div style={{
-          position: 'relative', zIndex: 2,
-          maxWidth: 1100, margin: '0 auto',
-          padding: '120px 48px 80px', width: '100%',
-          display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', gap: 40,
-        }} className="hero-inner">
-          <div style={{ maxWidth: 580 }}>
+        <div className="hero-inner">
+          {/* Texto */}
+          <div className="hero-text">
             <p style={{
               fontFamily: 'Montserrat', fontWeight: 700,
               fontSize: '0.7rem', letterSpacing: '0.25em',
-              textTransform: 'uppercase', color: '#f0493f', marginBottom: 24,
+              textTransform: 'uppercase', color: '#f0493f', marginBottom: 20,
             }}>✦ Gastronomía artesanal</p>
             <h1 style={{
               fontFamily: 'Montserrat', fontWeight: 900,
-              fontSize: 'clamp(3rem, 6vw, 6rem)',
+              fontSize: 'clamp(2.8rem, 6vw, 6rem)',
               letterSpacing: '-0.04em', lineHeight: 0.9,
-              color: '#eeeeee', textTransform: 'uppercase', marginBottom: 28,
+              color: '#eeeeee', textTransform: 'uppercase', marginBottom: 24,
             }}>
               SABOR<br />QUE SE<br /><span style={{ color: '#f0493f' }}>SIENTE</span>
             </h1>
             <p style={{
               fontFamily: 'Poppins', fontWeight: 300,
-              fontSize: '1.1rem', color: 'rgba(238,238,238,0.6)',
-              lineHeight: 1.8, marginBottom: 40, maxWidth: 420,
+              fontSize: '1rem', color: 'rgba(238,238,238,0.6)',
+              lineHeight: 1.8, marginBottom: 36, maxWidth: 400,
             }}>
               Productos artesanales elaborados con ingredientes frescos, pensados para elevar cada plato.
             </p>
-            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            <div className="hero-buttons">
               <button onClick={() => navigate('/productos')} style={{
                 background: '#f0493f', color: '#fff', border: 'none',
-                padding: '16px 36px', borderRadius: 2,
+                padding: '15px 32px', borderRadius: 2,
                 fontFamily: 'Montserrat', fontWeight: 700,
                 fontSize: '0.85rem', letterSpacing: '0.12em',
                 textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s',
@@ -98,7 +75,7 @@ export default function Home() {
               <button onClick={() => document.getElementById('pilares')?.scrollIntoView({ behavior: 'smooth' })} style={{
                 background: 'transparent', color: 'rgba(238,238,238,0.6)',
                 border: '1px solid rgba(238,238,238,0.2)',
-                padding: '16px 36px', borderRadius: 2,
+                padding: '15px 32px', borderRadius: 2,
                 fontFamily: 'Montserrat', fontWeight: 600,
                 fontSize: '0.85rem', letterSpacing: '0.12em',
                 textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s',
@@ -109,35 +86,18 @@ export default function Home() {
             </div>
           </div>
 
-          <div style={{
-            flexShrink: 0, width: 340,
-            animation: 'floatBowl 4s ease-in-out infinite',
-          }} className="hero-bowl">
+          {/* Bowl */}
+          <div className="hero-bowl">
             <img src="/images/bowl.png" alt="Bowl Gourmetto"
               style={{ width: '100%', filter: 'drop-shadow(0 20px 60px rgba(240,73,63,0.3))' }} />
           </div>
         </div>
-
-        <div style={{
-          position: 'absolute', bottom: 32, left: '50%',
-          transform: 'translateX(-50%)', zIndex: 2,
-          display: 'flex', gap: 8,
-        }}>
-          {banners.map((_, i) => (
-            <button key={i} onClick={() => setHeroBg(i)} style={{
-              width: heroBg === i ? 24 : 8, height: 8,
-              borderRadius: 4, border: 'none', cursor: 'pointer',
-              background: heroBg === i ? '#f0493f' : 'rgba(238,238,238,0.3)',
-              transition: 'all 0.3s ease', padding: 0,
-            }} />
-          ))}
-        </div>
       </section>
 
-      {/* ── PILARES — fondo accent ── */}
-      <section id="pilares" style={{ background: '#f0493f', padding: '100px 48px' }}>
+      {/* ── PILARES ── */}
+      <section id="pilares" className="section-pilares">
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 64 }}>
+          <div style={{ textAlign: 'center', marginBottom: 56 }}>
             <p style={{
               fontFamily: 'Montserrat', fontWeight: 700,
               fontSize: '0.7rem', letterSpacing: '0.2em',
@@ -145,25 +105,25 @@ export default function Home() {
             }}>✦ Por qué Gourmetto</p>
             <h2 style={{
               fontFamily: 'Montserrat', fontWeight: 900,
-              fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+              fontSize: 'clamp(1.8rem, 4vw, 3.5rem)',
               letterSpacing: '-0.03em', color: '#fff', lineHeight: 1,
             }}>
               HECHO CON <span style={{ color: '#272727' }}>INTENCIÓN</span>
             </h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }} className="pilares-grid">
+          <div className="pilares-grid">
             {pilares.map((p, i) => (
               <div key={i} style={{
                 background: 'rgba(0,0,0,0.15)', borderRadius: 6,
                 border: '1px solid rgba(255,255,255,0.15)',
-                padding: '36px 32px', transition: 'background 0.2s',
+                padding: '32px 28px', transition: 'background 0.2s',
               }}
                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.25)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
               >
-                <span style={{ fontSize: '2rem', display: 'block', marginBottom: 20 }}>{p.icon}</span>
-                <h3 style={{ fontFamily: 'Montserrat', fontWeight: 800, fontSize: '1.1rem', color: '#fff', marginBottom: 12 }}>{p.titulo}</h3>
-                <p style={{ fontFamily: 'Poppins', fontWeight: 300, fontSize: '0.9rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>{p.desc}</p>
+                <span style={{ fontSize: '2rem', display: 'block', marginBottom: 16 }}>{p.icon}</span>
+                <h3 style={{ fontFamily: 'Montserrat', fontWeight: 800, fontSize: '1.05rem', color: '#fff', marginBottom: 10 }}>{p.titulo}</h3>
+                <p style={{ fontFamily: 'Poppins', fontWeight: 300, fontSize: '0.88rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>{p.desc}</p>
               </div>
             ))}
           </div>
@@ -171,9 +131,9 @@ export default function Home() {
       </section>
 
       {/* ── PRODUCTOS DESTACADOS ── */}
-      <section style={{ background: '#202020', padding: '100px 48px' }}>
+      <section className="section-destacados">
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 48, flexWrap: 'wrap', gap: 16 }}>
+          <div className="destacados-header">
             <div>
               <p style={{
                 fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.7rem',
@@ -181,7 +141,7 @@ export default function Home() {
               }}>✦ Lo más pedido</p>
               <h2 style={{
                 fontFamily: 'Montserrat', fontWeight: 900,
-                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                fontSize: 'clamp(1.8rem, 4vw, 3rem)',
                 letterSpacing: '-0.03em', color: '#eeeeee', lineHeight: 1,
               }}>PRODUCTOS<br /><span style={{ color: '#f0493f' }}>DESTACADOS</span></h2>
             </div>
@@ -189,13 +149,14 @@ export default function Home() {
               background: 'transparent', color: 'rgba(238,238,238,0.5)',
               border: '1px solid rgba(238,238,238,0.15)', padding: '12px 28px', borderRadius: 2,
               fontFamily: 'Montserrat', fontWeight: 600, fontSize: '0.8rem',
-              letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s',
+              letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer',
+              transition: 'all 0.2s', alignSelf: 'flex-end',
             }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = '#f0493f'; e.currentTarget.style.color = '#f0493f'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(238,238,238,0.15)'; e.currentTarget.style.color = 'rgba(238,238,238,0.5)'; }}
             >Ver todos →</button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }} className="destacados-grid">
+          <div className="destacados-grid">
             {destacados.map((product, i) => (
               <div key={i} style={{
                 background: '#272727', borderRadius: 6,
@@ -207,19 +168,19 @@ export default function Home() {
               >
                 <div style={{
                   background: 'linear-gradient(135deg, #2a2a2a, #1e1e1e)',
-                  padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 180,
+                  padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 160,
                 }}>
-                  <img src={product.photo} alt={product.name} style={{ height: 130, objectFit: 'contain' }} />
+                  <img src={product.photo} alt={product.name} style={{ height: 120, objectFit: 'contain' }} />
                 </div>
-                <div style={{ padding: '20px 20px 24px' }}>
-                  <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.95rem', color: '#eeeeee', marginBottom: 6 }}>{product.name}</p>
-                  <p style={{ fontFamily: 'Montserrat', fontSize: '0.72rem', color: 'rgba(238,238,238,0.3)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 16 }}>{product.weight}</p>
+                <div style={{ padding: '16px 18px 20px' }}>
+                  <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.9rem', color: '#eeeeee', marginBottom: 4 }}>{product.name}</p>
+                  <p style={{ fontFamily: 'Montserrat', fontSize: '0.68rem', color: 'rgba(238,238,238,0.3)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>{product.weight}</p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontFamily: 'Montserrat', fontWeight: 900, fontSize: '1.1rem', color: '#f0493f' }}>{product.price}</span>
-                    <button onClick={() => addItem(product)} style={{
+                    <span style={{ fontFamily: 'Montserrat', fontWeight: 900, fontSize: '1rem', color: '#f0493f' }}>{product.price}</span>
+                    <button onClick={(e) => { e.stopPropagation(); addItem(product); }} style={{
                       background: '#f0493f', color: '#fff', border: 'none',
-                      padding: '8px 14px', borderRadius: 2, fontFamily: 'Montserrat',
-                      fontWeight: 700, fontSize: '0.72rem', cursor: 'pointer', transition: 'all 0.2s',
+                      padding: '8px 12px', borderRadius: 2, fontFamily: 'Montserrat',
+                      fontWeight: 700, fontSize: '0.68rem', cursor: 'pointer', transition: 'all 0.2s',
                     }}
                       onMouseEnter={e => { e.target.style.background = '#eeeeee'; e.target.style.color = '#272727'; }}
                       onMouseLeave={e => { e.target.style.background = '#f0493f'; e.target.style.color = '#fff'; }}
@@ -235,84 +196,72 @@ export default function Home() {
       </section>
 
       {/* ── TESTIMONIOS ── */}
-      <section style={{ background: '#272727', padding: '100px 48px' }}>
+      <section className="section-testimonios">
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 64 }}>
+          <div style={{ textAlign: 'center', marginBottom: 56 }}>
             <p style={{
               fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.7rem',
               letterSpacing: '0.2em', textTransform: 'uppercase', color: '#f0493f', marginBottom: 16,
             }}>✦ Lo que dicen</p>
             <h2 style={{
               fontFamily: 'Montserrat', fontWeight: 900,
-              fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+              fontSize: 'clamp(1.8rem, 4vw, 3.5rem)',
               letterSpacing: '-0.03em', color: '#eeeeee', lineHeight: 1,
             }}>CLIENTES QUE<br /><span style={{ color: '#f0493f' }}>NOS ELIGEN</span></h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }} className="testimonios-grid">
+          <div className="testimonios-grid">
             {testimonios.map((t, i) => (
               <div key={i} style={{
                 background: '#202020', borderRadius: 6,
-                border: '1px solid rgba(238,238,238,0.05)', padding: '32px 28px',
+                border: '1px solid rgba(238,238,238,0.05)', padding: '28px 24px',
               }}>
-                <div style={{ display: 'flex', gap: 3, marginBottom: 20 }}>
+                <div style={{ display: 'flex', gap: 3, marginBottom: 16 }}>
                   {Array.from({ length: t.estrellas }).map((_, j) => (
                     <span key={j} style={{ color: '#f0493f', fontSize: '0.9rem' }}>★</span>
                   ))}
                 </div>
                 <p style={{
-                  fontFamily: 'Poppins', fontWeight: 300, fontSize: '0.95rem',
-                  color: 'rgba(238,238,238,0.6)', lineHeight: 1.8, marginBottom: 24, fontStyle: 'italic',
+                  fontFamily: 'Poppins', fontWeight: 300, fontSize: '0.9rem',
+                  color: 'rgba(238,238,238,0.6)', lineHeight: 1.8, marginBottom: 20, fontStyle: 'italic',
                 }}>"{t.texto}"</p>
-                <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.85rem', color: '#eeeeee' }}>— {t.nombre}</p>
+                <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.82rem', color: '#eeeeee' }}>— {t.nombre}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA FINAL — con banner negro de fondo ── */}
-      <section style={{
-        padding: '120px 48px', textAlign: 'center',
-        position: 'relative', overflow: 'hidden',
-      }}>
-        {/* Banner negro de fondo */}
+      {/* ── CTA FINAL ── */}
+      <section className="section-cta">
         <div style={{
           position: 'absolute', inset: 0, zIndex: 0,
           backgroundImage: 'url(/images/headers/home-banner-negro.png)',
           backgroundSize: 'cover', backgroundPosition: 'center',
         }} />
-        {/* Overlay para legibilidad */}
-        <div style={{
-          position: 'absolute', inset: 0, zIndex: 1,
-          background: 'rgba(20,20,20,0.72)',
-        }} />
-
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'rgba(20,20,20,0.72)' }} />
         <div style={{ position: 'relative', zIndex: 2 }}>
           <p style={{
-            fontFamily: 'Montserrat', fontWeight: 700,
-            fontSize: '0.7rem', letterSpacing: '0.2em',
-            textTransform: 'uppercase', color: '#f0493f', marginBottom: 20,
+            fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.7rem',
+            letterSpacing: '0.2em', textTransform: 'uppercase', color: '#f0493f', marginBottom: 20,
           }}>✦ ¿Listo para probar?</p>
           <h2 style={{
             fontFamily: 'Montserrat', fontWeight: 900,
-            fontSize: 'clamp(2.5rem, 5vw, 5rem)',
+            fontSize: 'clamp(2rem, 5vw, 5rem)',
             letterSpacing: '-0.04em', color: '#eeeeee',
-            lineHeight: 0.95, marginBottom: 28,
+            lineHeight: 0.95, marginBottom: 24,
           }}>
             LLEVÁ EL SABOR<br /><span style={{ color: '#f0493f' }}>A TU MESA</span>
           </h2>
           <p style={{
-            fontFamily: 'Poppins', fontWeight: 300,
-            fontSize: '1rem', color: 'rgba(238,238,238,0.45)',
-            maxWidth: 460, margin: '0 auto 44px',
+            fontFamily: 'Poppins', fontWeight: 300, fontSize: '0.95rem',
+            color: 'rgba(238,238,238,0.45)', maxWidth: 440, margin: '0 auto 40px',
           }}>
             Explorá nuestra selección de productos artesanales y pedí hoy directo por nuestra tienda.
           </p>
           <button onClick={() => navigate('/productos')} style={{
             background: '#f0493f', color: '#fff', border: 'none',
-            padding: '18px 48px', borderRadius: 2,
-            fontFamily: 'Montserrat', fontWeight: 700,
-            fontSize: '0.9rem', letterSpacing: '0.12em',
+            padding: '16px 44px', borderRadius: 2, fontFamily: 'Montserrat',
+            fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em',
             textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s',
           }}
             onMouseEnter={e => { e.target.style.background = '#eeeeee'; e.target.style.color = '#272727'; }}
@@ -328,15 +277,107 @@ export default function Home() {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-18px); }
         }
-        @media (max-width: 900px) {
-          .hero-bowl { display: none !important; }
-          .pilares-grid { grid-template-columns: 1fr !important; }
-          .destacados-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .testimonios-grid { grid-template-columns: 1fr !important; }
+
+        /* ── Hero ── */
+        .hero-inner {
+          position: relative; z-index: 2;
+          max-width: 1100px; margin: 0 auto;
+          padding: 120px 48px 80px;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 40px;
         }
+        .hero-text { max-width: 560px; }
+        .hero-bowl {
+          flex-shrink: 0;
+          width: 320px;
+          animation: floatBowl 4s ease-in-out infinite;
+        }
+        .hero-buttons {
+          display: flex;
+          gap: 14px;
+          flex-wrap: wrap;
+        }
+
+        /* ── Secciones ── */
+        .section-pilares   { background: #f0493f; padding: 100px 48px; }
+        .section-destacados { background: #202020; padding: 100px 48px; }
+        .section-testimonios { background: #272727; padding: 100px 48px; }
+        .section-cta {
+          padding: 120px 48px; text-align: center;
+          position: relative; overflow: hidden;
+        }
+
+        /* ── Grids ── */
+        .pilares-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
+        }
+        .destacados-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          margin-bottom: 40px;
+          flex-wrap: wrap;
+          gap: 16px;
+        }
+        .destacados-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 20px;
+        }
+        .testimonios-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
+        }
+
+        /* ── Tablet ── */
+        @media (max-width: 900px) {
+          .hero-bowl { width: 240px; }
+          .pilares-grid { grid-template-columns: 1fr 1fr; }
+          .destacados-grid { grid-template-columns: repeat(2, 1fr); }
+          .testimonios-grid { grid-template-columns: 1fr 1fr; }
+          .section-pilares, .section-destacados,
+          .section-testimonios { padding: 72px 32px; }
+          .section-cta { padding: 90px 32px; }
+          .hero-inner { padding: 100px 32px 60px; }
+        }
+
+        /* ── Mobile ── */
         @media (max-width: 600px) {
-          .destacados-grid { grid-template-columns: 1fr !important; }
-          .hero-inner { padding: 120px 24px 60px !important; }
+          .hero-inner {
+            padding: 100px 20px 60px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+          }
+          .hero-text { max-width: 100%; }
+          .hero-bowl {
+            width: 180px;
+            position: absolute;
+            top: 130px;
+            right: 20px;
+            animation: floatBowl 4s ease-in-out infinite;
+          }
+          .hero-buttons { flex-direction: column; }
+          .hero-buttons button { width: 100%; text-align: center; }
+          .pilares-grid { grid-template-columns: 1fr; gap: 14px; }
+          .destacados-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+          .testimonios-grid { grid-template-columns: 1fr; gap: 14px; }
+          .destacados-header { flex-direction: column; align-items: flex-start; }
+          .section-pilares, .section-destacados,
+          .section-testimonios { padding: 56px 20px; }
+          .section-cta { padding: 64px 20px; }
+        }
+
+        /* ── Mobile muy pequeño ── */
+        @media (max-width: 380px) {
+          .destacados-grid { grid-template-columns: 1fr; }
+          .hero-bowl { width: 140px; top: 90px; right: 12px; }
         }
       `}</style>
     </>

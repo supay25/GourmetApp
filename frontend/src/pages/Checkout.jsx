@@ -491,14 +491,39 @@ export default function Checkout() {
       </div>
 
       <style>{`
-  @media (max-width: 768px) {
-    .checkout-layout { flex-direction: column !important; }
-    .checkout-resumen { width: 100% !important; position: static !important; }
-    .checkout-row { flex-direction: column !important; }
+  .checkout-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 48px;
   }
+  .checkout-layout {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+  }
+  .checkout-resumen {
+    width: 300px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 100px;
+  }
+  .checkout-row {
+    display: flex;
+    gap: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .checkout-wrapper { padding: 0 24px; }
+    .checkout-layout { flex-direction: column; gap: 24px; }
+    .checkout-resumen {
+      width: 100% !important;
+      position: static !important;
+    }
+    .checkout-row { flex-direction: column; gap: 0; }
+  }
+
   @media (max-width: 480px) {
-    section { padding-left: 0 !important; padding-right: 0 !important; }
-    .checkout-wrapper { padding: 0 20px !important; }
+    .checkout-wrapper { padding: 0 16px; }
   }
 `}</style>
     </section>

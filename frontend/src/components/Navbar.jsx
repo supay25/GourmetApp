@@ -50,11 +50,12 @@ function Navbar() {
           ))}
         </div>
 
-        {/* Right: carrito + CTA */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+        {/* Right: carrito + CTA + toggler */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
 
           {/* Ícono carrito */}
-          <Link to="/carrito" style={{ textDecoration: 'none', position: 'relative', display: 'flex', alignItems: 'center' }}
+          <Link to="/carrito"
+            style={{ textDecoration: 'none', position: 'relative', display: 'flex', alignItems: 'center' }}
             className="cart-icon-wrapper">
             <i className="fa-solid fa-bag-shopping" style={{ color: '#eeeeee', fontSize: '1.2rem', transition: 'color 0.2s' }} />
             {totalItems > 0 && (
@@ -70,18 +71,18 @@ function Navbar() {
             )}
           </Link>
 
-          {/* CTA */}
+          {/* CTA — solo desktop */}
           <Link to="/productos" style={{ textDecoration: 'none' }} className="navbar-cta-wrapper">
             <button className="navbar-cta">Pedir ahora</button>
           </Link>
-        </div>
 
-        {/* Mobile toggler */}
-        <button className="navbar-toggler" onClick={() => setIsOpen(!isOpen)}>
-          <span style={{ transform: isOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none', transition: 'all 0.3s' }} />
-          <span style={{ opacity: isOpen ? 0 : 1, transition: 'all 0.3s' }} />
-          <span style={{ transform: isOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none', transition: 'all 0.3s' }} />
-        </button>
+          {/* Toggler — solo mobile */}
+          <button className="navbar-toggler" onClick={() => setIsOpen(!isOpen)}>
+            <span style={{ transform: isOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none', transition: 'all 0.3s' }} />
+            <span style={{ opacity: isOpen ? 0 : 1, transition: 'all 0.3s' }} />
+            <span style={{ transform: isOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none', transition: 'all 0.3s' }} />
+          </button>
+        </div>
       </nav>
 
       {/* Mobile menu */}
@@ -120,9 +121,18 @@ function Navbar() {
           </Link>
 
           <div style={{ marginTop: 32, display: 'flex', gap: 16 }}>
-            <a href="https://instagram.com/gourmetto.cr" target="_blank" rel="noreferrer" style={{ color: '#f0493f', fontSize: '1.5rem' }}><i className="fa-brands fa-instagram" /></a>
-            <a href="https://www.facebook.com/profile.php?id=61558109290511" target="_blank" rel="noreferrer" style={{ color: '#f0493f', fontSize: '1.5rem' }}><i className="fa-brands fa-facebook" /></a>
-            <a href="https://wa.me/50663818443" target="_blank" rel="noreferrer" style={{ color: '#f0493f', fontSize: '1.5rem' }}><i className="fa-brands fa-whatsapp" /></a>
+            <a href="https://instagram.com/gourmetto.cr" target="_blank" rel="noreferrer"
+              style={{ color: '#f0493f', fontSize: '1.5rem' }}>
+              <i className="fa-brands fa-instagram" />
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61558109290511" target="_blank" rel="noreferrer"
+              style={{ color: '#f0493f', fontSize: '1.5rem' }}>
+              <i className="fa-brands fa-facebook" />
+            </a>
+            <a href="https://wa.me/50663818443" target="_blank" rel="noreferrer"
+              style={{ color: '#f0493f', fontSize: '1.5rem' }}>
+              <i className="fa-brands fa-whatsapp" />
+            </a>
           </div>
         </div>
       </div>
@@ -160,7 +170,7 @@ function Navbar() {
           .navbar-cta-wrapper { display: none !important; }
           .navbar-toggler { display: flex !important; }
           .navbar-mobile-menu { display: block; }
-          nav { padding: 0 24px !important; }
+          nav { padding: 0 20px !important; }
         }
       `}</style>
     </>
