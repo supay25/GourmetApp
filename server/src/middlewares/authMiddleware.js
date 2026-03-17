@@ -1,1 +1,0 @@
-// Funciones para validar tokens o permisos
