@@ -75,7 +75,7 @@ export default function Productos() {
               <div
                 style={{
                   height: 1,
-                  background: "rgba(238,238,238,0.07)",
+                  background: "rgba(32,32,32,0.15)",
                   margin: "12px 0",
                 }}
               />
@@ -119,71 +119,78 @@ export default function Productos() {
         }
         .products-grid {
           max-width: 1200px; margin: 0 auto; padding: 72px 48px;
-          display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
         }
         .product-card-new {
-          display: flex; flex-direction: column; background: #272727;
-          border-radius: 6px; overflow: hidden;
-          border: 1px solid rgba(238,238,238,0.05);
+          display: flex; flex-direction: column;
+          background: #eeeeee; border-radius: 6px; overflow: hidden;
+          border: 1px solid rgba(0,0,0,0.06);
           transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
           cursor: pointer;
         }
         .product-card-new:hover {
-          transform: translateY(-6px); box-shadow: 0 20px 48px rgba(0,0,0,0.5);
-          border-color: rgba(240,73,63,0.3);
+          transform: translateY(-6px);
+          box-shadow: 0 20px 48px rgba(0,0,0,0.4);
+          border-color: rgba(240,73,63,0.4);
         }
         .product-image-area {
-          background: linear-gradient(160deg, #2a2a2a, #1e1e1e);
+          background: linear-gradient(160deg, #e0e0e0, #d4d4d4);
           display: flex; align-items: center; justify-content: center;
-          padding: 32px 24px; position: relative; overflow: hidden; aspect-ratio: 1;
+          padding: 24px; position: relative; overflow: hidden;
+          aspect-ratio: 4/3;  /* antes era 1 (cuadrado) */
         }
         .product-glow {
           position: absolute; width: 100px; height: 100px; border-radius: 50%;
-          background: radial-gradient(circle, rgba(240,73,63,0.15), transparent 70%);
+          background: radial-gradient(circle, rgba(240,73,63,0.2), transparent 70%);
           pointer-events: none;
         }
         .product-img {
-          width: 75%; height: 75%; object-fit: contain;
+          width: 80%; height: 80%; object-fit: contain;
           position: relative; z-index: 1; transition: transform 0.3s ease;
         }
         .product-card-new:hover .product-img { transform: scale(1.06); }
-        .product-info-area { padding: 16px; display: flex; flex-direction: column; flex: 1; }
+        .product-info-area {
+          padding: 20px; display: flex; flex-direction: column; flex: 1;
+          background: #eeeeee;
+        }
         .product-name {
-          font-family: Montserrat; font-weight: 700; font-size: 0.95rem;
-          color: #eeeeee; line-height: 1.3; margin-bottom: 4px;
+          font-family: Montserrat; font-weight: 700; font-size: 1.4rem;
+          color: #202020; line-height: 1.3; margin-bottom: 6px;
         }
         .product-weight {
-          font-family: Montserrat; font-weight: 700; font-size: 0.62rem;
-          letter-spacing: 0.1em; color: rgba(238,238,238,0.3);
-          text-transform: uppercase; display: block; margin-bottom: 8px;
+          font-family: Montserrat; font-weight: 700; font-size: 0.85rem;
+          letter-spacing: 0.1em; color: rgba(32,32,32,0.55);
+          text-transform: uppercase; display: block; margin-bottom: 10px;
         }
         .product-desc {
-          font-family: Poppins; font-weight: 300; font-size: 0.82rem;
-          color: rgba(238,238,238,0.45); line-height: 1.6;
+          font-family: Poppins; font-weight: 300; font-size: 1rem;
+          color: rgba(32,32,32,0.65); line-height: 1.6;
         }
         .product-price {
           font-family: Montserrat; font-weight: 800;
-          font-size: 1.1rem; color: #f0493f;
+          font-size: 1.2rem; color: #f0493f;
         }
         .product-btn {
           background: #f0493f; color: #fff; border: none;
-          width: 34px; height: 34px; border-radius: 2px;
+          width: 36px; height: 36px; border-radius: 2px;
           display: flex; align-items: center; justify-content: center;
-          font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+          font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
           flex-shrink: 0;
         }
-        .product-btn:hover { background: #eeeeee; color: #272727; }
+        .product-btn:hover { background: #272727; color: #fff; }
 
-        @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 768px) {
           .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 40px 20px; }
           .productos-header-inner { flex-direction: column; gap: 16px; padding: 0 20px 40px; }
           .productos-subtitle { text-align: left; max-width: 100%; }
           .product-image-area { padding: 20px; }
-          .product-info-area { padding: 12px; }
-          .product-name { font-size: 0.82rem; }
-          .product-desc { font-size: 0.75rem; }
-          .product-price { font-size: 1rem; }
+          .product-info-area { padding: 14px; }
+          .product-name { font-size: 0.9rem; }
+          .product-desc { font-size: 0.8rem; }
+          .product-price { font-size: 1.05rem; }
           .productos-header-inner > div { text-align: left; width: 100%; }
         }
         @media (max-width: 380px) {
