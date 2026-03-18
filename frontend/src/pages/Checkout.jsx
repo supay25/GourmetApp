@@ -40,17 +40,16 @@ export default function Checkout() {
 
   const [form, setForm] = useState({
     nombre: "",
-    telefono: "",
-    email: "",
+    numero: "",
     direccion: "",
   });
+
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   const total = items.reduce((sum, i) => {
-    const price = parseFloat(i.price.replace(/[^0-9]/g, ""));
-    return sum + price * i.qty;
+    return sum + i.precio * i.qty;
   }, 0);
 
   // Redirigir si el carrito está vacío
@@ -104,12 +103,9 @@ export default function Checkout() {
   const validate = () => {
     const e = {};
     if (!form.nombre.trim()) e.nombre = "El nombre es requerido";
-    if (!form.telefono.trim()) e.telefono = "El teléfono es requerido";
-    else if (!/^\d{8}$/.test(form.telefono.replace(/\s/g, "")))
-      e.telefono = "Ingresá un teléfono válido (8 dígitos)";
-    if (!form.email.trim()) e.email = "El email es requerido";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = "Ingresá un email válido";
+    if (!form.numero.trim()) e.numero = "El teléfono es requerido";
+    else if (!/^\d{8}$/.test(form.numero.replace(/\s/g, "")))
+      e.numero = "Ingresá un teléfono válido (8 dígitos)";
     if (!form.direccion.trim()) e.direccion = "La dirección es requerida";
     return e;
   };
@@ -122,36 +118,49 @@ export default function Checkout() {
   };
 
   const handleSubmit = async () => {
-    const e = validate();
-    if (Object.keys(e).length > 0) {
-      setErrors(e);
-      return;
+
+
+    try {
+
+      const e = validate();
+      if (Object.keys(e).length > 0) {
+        setErrors(e);
+        return;
+      }
+
+      setLoading(true);
+
+      // Mock del pedido — cuando el backend esté listo, reemplazar por fetch real
+      const pedido = {
+        nombre: form.nombre,
+        numero: form.numero,
+        direccion: form.direccion,
+        lista: items.map((i) => ({
+          productoId: i.id,
+          nombre: i.name,
+          cantidad: i.qty,
+          precio: i.precio
+        })),
+        total,
+      };
+      console.log("Pedido a enviar:", pedido);
+
+      const respuesta = await fetch("http://localhost:3000/api/pedidos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pedido)
+      });
+      const data = await respuesta.json();
+      const numeroPedido = data.codigo
+
+      setLoading(false);
+      clearCart();
+      navigate("/pago", { state: { pedido: { ...pedido, numeroPedido } } });
+    } catch (error) {
+      console.error("Error:", error)
+      setLoading(false)
     }
 
-    setLoading(true);
-
-    // Mock del pedido — cuando el backend esté listo, reemplazar por fetch real
-    const pedido = {
-      cliente: form,
-      items: items.map((i) => ({
-        nombre: i.name,
-        cantidad: i.qty,
-        precio: i.price,
-      })),
-      total,
-    };
-
-    console.log("Pedido a enviar:", pedido);
-
-    // Simular delay de red
-    await new Promise((r) => setTimeout(r, 1000));
-
-    // Mock: número de pedido generado localmente
-    const numeroPedido = `GRM-${Date.now().toString().slice(-6)}`;
-
-    setLoading(false);
-    clearCart();
-    navigate("/pago", { state: { pedido: { ...pedido, numeroPedido } } });
   };
 
   return (
@@ -222,70 +231,30 @@ export default function Checkout() {
                   placeholder="Ej: María García"
                   style={inputStyle(errors.nombre)}
                   onFocus={(e) =>
-                    (e.target.style.borderColor = errors.nombre
-                      ? "#f0493f"
-                      : "rgba(240,73,63,0.5)")
+                  (e.target.style.borderColor = errors.nombre
+                    ? "#f0493f"
+                    : "rgba(240,73,63,0.5)")
                   }
                   onBlur={(e) =>
-                    (e.target.style.borderColor = errors.nombre
-                      ? "#f0493f"
-                      : "rgba(238,238,238,0.1)")
+                  (e.target.style.borderColor = errors.nombre
+                    ? "#f0493f"
+                    : "rgba(238,238,238,0.1)")
                   }
                 />
                 {errors.nombre && <p style={errorStyle}>{errors.nombre}</p>}
               </div>
 
-              {/* Teléfono + Email en fila */}
-              <div
-                style={{ display: "flex", gap: 16, marginBottom: 24 }}
-                className="checkout-row"
-              >
-                <div style={{ flex: 1 }}>
-                  <label style={labelStyle}>Teléfono</label>
-                  <input
-                    name="telefono"
-                    value={form.telefono}
-                    onChange={handleChange}
-                    placeholder="Ej: 88001234"
-                    maxLength={8}
-                    style={inputStyle(errors.telefono)}
-                    onFocus={(e) =>
-                      (e.target.style.borderColor = errors.telefono
-                        ? "#f0493f"
-                        : "rgba(240,73,63,0.5)")
-                    }
-                    onBlur={(e) =>
-                      (e.target.style.borderColor = errors.telefono
-                        ? "#f0493f"
-                        : "rgba(238,238,238,0.1)")
-                    }
-                  />
-                  {errors.telefono && (
-                    <p style={errorStyle}>{errors.telefono}</p>
-                  )}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={labelStyle}>Correo electrónico</label>
-                  <input
-                    name="email"
-                    type="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="Ej: maria@correo.com"
-                    style={inputStyle(errors.email)}
-                    onFocus={(e) =>
-                      (e.target.style.borderColor = errors.email
-                        ? "#f0493f"
-                        : "rgba(240,73,63,0.5)")
-                    }
-                    onBlur={(e) =>
-                      (e.target.style.borderColor = errors.email
-                        ? "#f0493f"
-                        : "rgba(238,238,238,0.1)")
-                    }
-                  />
-                  {errors.email && <p style={errorStyle}>{errors.email}</p>}
-                </div>
+              <div style={{ flex: 1 }}>
+                <label style={labelStyle}>Teléfono</label>
+                <input
+                  name="numero"
+                  value={form.numero}
+                  onChange={handleChange}
+                  placeholder="Ej: 88001234"
+                  maxLength={8}
+                  style={inputStyle(errors.numero)}
+                />
+                {errors.numero && <p style={errorStyle}>{errors.numero}</p>}
               </div>
 
               {/* Dirección */}
@@ -303,14 +272,14 @@ export default function Checkout() {
                     lineHeight: 1.6,
                   }}
                   onFocus={(e) =>
-                    (e.target.style.borderColor = errors.direccion
-                      ? "#f0493f"
-                      : "rgba(240,73,63,0.5)")
+                  (e.target.style.borderColor = errors.direccion
+                    ? "#f0493f"
+                    : "rgba(240,73,63,0.5)")
                   }
                   onBlur={(e) =>
-                    (e.target.style.borderColor = errors.direccion
-                      ? "#f0493f"
-                      : "rgba(238,238,238,0.1)")
+                  (e.target.style.borderColor = errors.direccion
+                    ? "#f0493f"
+                    : "rgba(238,238,238,0.1)")
                   }
                 />
                 {errors.direccion && (

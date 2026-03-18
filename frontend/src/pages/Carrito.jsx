@@ -6,8 +6,7 @@ export default function Carrito() {
   const navigate = useNavigate();
 
   const total = items.reduce((sum, i) => {
-    const price = parseFloat(i.price.replace(/[^0-9]/g, ""));
-    return sum + price * i.qty;
+    return sum + i.precio * i.qty;
   }, 0);
 
   if (items.length === 0) {
@@ -130,7 +129,7 @@ export default function Carrito() {
           <div className="carrito-items">
             {items.map((item) => (
               <div
-                key={item.name}
+                key={item._id}
                 style={{
                   display: "flex",
                   alignItems: "center",

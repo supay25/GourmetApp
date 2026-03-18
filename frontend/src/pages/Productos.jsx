@@ -1,9 +1,33 @@
-import { useState } from "react";
-import products from "../data/products";
+import { useState, useEffect } from "react";
 import ProductModal from "../components/ProductModal";
 
 export default function Productos() {
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(null)
+  const [productos, setProductos] = useState([])
+
+
+
+  useEffect(() => {
+    listaProductos()
+  }, [])
+
+
+
+  const listaProductos = async () => {
+    try {
+      const respuesta = await fetch("http://localhost:3000/api/productos", {
+        method: "GET"
+      });
+      const data = await respuesta.json();
+      setProductos(data)
+      console.log(data)
+
+    } catch (error) {
+      console.error("Error:", error)
+    }
+  }
+
+
 
   return (
     <section
@@ -52,47 +76,34 @@ export default function Productos() {
 
       {/* Grid */}
       <div className="products-grid">
-        {products.map((product) => (
+        {productos.map((p) => (
           <div
-            key={product.name}
+            key={p._id}         
             className="product-card-new"
-            onClick={() => setSelected(product)}
+            onClick={() => setSelected(p)}
           >
             <div className="product-image-area">
               <div className="product-glow" />
               <img
-                src={product.photo}
-                alt={product.name}
+                src={p.imagen}   
+                alt={p.nombre}   
                 className="product-img"
               />
             </div>
             <div className="product-info-area">
               <div style={{ flex: 1 }}>
-                <h2 className="product-name">{product.name}</h2>
-                <span className="product-weight">{product.weight}</span>
-                <p className="product-desc">{product.description}</p>
+                <h2 className="product-name">{p.nombre}</h2>
+                <span className="product-weight">Stock: {p.stock}</span>
+                <p className="product-desc">{p.descripcion}</p>
               </div>
-              <div
-                style={{
-                  height: 1,
-                  background: "rgba(238,238,238,0.07)",
-                  margin: "12px 0",
-                }}
-              />
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 8,
-                }}
-              >
-                <span className="product-price">{product.price}</span>
+              <div style={{ height: 1, background: "rgba(238,238,238,0.07)", margin: "12px 0" }} />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <span className="product-price">₡{p.precio.toLocaleString()}</span>
                 <button
                   className="product-btn"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelected(product);
+                    setSelected(p);
                   }}
                 >
                   <i className="fa-solid fa-cart-shopping"></i>
