@@ -7,6 +7,7 @@ import { connectDB } from "./config/db.js";
 import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import productoRouter from "./routes/productoRoutes.js";
+import pedidoRouter from "./routes/pedidoRoutes.js";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api/productos", productoRouter);
+app.use("/api/pedidos", pedidoRouter);
 
 connectDB()
   .then(() => {
@@ -30,4 +32,4 @@ connectDB()
   .catch((err) => {
     console.error("Error DB:", err);
     process.exit(1);
-  });
+  }); 
