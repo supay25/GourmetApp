@@ -16,6 +16,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminPedidos from './pages/admin/AdminPedidos';
 import AdminProductos from './pages/admin/AdminProductos';
+import AdminUsuarios from './pages/admin/AdminUsuarios';
 import AdminConfiguracion from './pages/admin/AdminConfiguracion';
 import './style.css';
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="/checkout" element={<><Navbar /><Checkout /></>} />
             <Route path="/pago" element={<Sinpe />} />
             <Route path="/confirmacion" element={<Confirmacion />} />
+            <Route path="/admin/usuarios" element={<AdminRoute><AdminUsuarios /></AdminRoute>} />
 
             {/* Admin */}
             <Route path="/admin" element={<AdminLogin />} />

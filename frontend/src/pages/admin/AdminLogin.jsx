@@ -1,33 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 export default function AdminLogin() {
-  const { login, isAuth } = useAuth();
+  const { loginWithBackend, isAuth } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ user: '', pass: '' });
+  const [form, setForm] = useState({ identifier: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Si ya está autenticado, redirigir directo
-  if (isAuth) {
-    navigate('/admin/dashboard');
-    return null;
-  }
+  // Si ya está autenticado, redirigir directo al dashboard
+  useEffect(() => {
+    if (isAuth) navigate('/admin/dashboard');
+  }, [isAuth, navigate]);
 
   const handleSubmit = async () => {
-    if (!form.user || !form.pass) {
+    if (!form.identifier || !form.password) {
       setError('Completá ambos campos.');
       return;
     }
     setLoading(true);
-    await new Promise(r => setTimeout(r, 600)); // simular delay
-    const ok = login(form.user, form.pass);
-    setLoading(false);
-    if (ok) {
+    setError('');
+    try {
+      // Login real contra el backend — acepta username o email
+      await loginWithBackend(form.identifier, form.password);
       navigate('/admin/dashboard');
-    } else {
+    } catch (e) {
       setError('Credenciales incorrectas.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,7 +51,7 @@ export default function AdminLogin() {
           }}>Panel de administración</p>
         </div>
 
-        {/* Card */}
+        {/* Card de login */}
         <div style={{
           background: '#272727', borderRadius: 8,
           border: '1px solid rgba(238,238,238,0.06)',
@@ -62,19 +63,19 @@ export default function AdminLogin() {
             color: '#eeeeee', marginBottom: 32,
           }}>Iniciar sesión</h1>
 
-          {/* Usuario */}
+          {/* Usuario o email */}
           <div style={{ marginBottom: 20 }}>
             <label style={{
               fontFamily: 'Montserrat', fontWeight: 700,
               fontSize: '0.68rem', letterSpacing: '0.12em',
               textTransform: 'uppercase', color: 'rgba(238,238,238,0.4)',
               display: 'block', marginBottom: 8,
-            }}>Usuario</label>
+            }}>Usuario o email</label>
             <input
-              value={form.user}
-              onChange={e => { setForm(p => ({ ...p, user: e.target.value })); setError(''); }}
+              value={form.identifier}
+              onChange={e => { setForm(p => ({ ...p, identifier: e.target.value })); setError(''); }}
               onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-              placeholder="Usuario"
+              placeholder="Ej: marcelo o admin@gourmetto.com"
               style={{
                 width: '100%', background: '#1e1e1e',
                 border: `1px solid ${error ? 'rgba(240,73,63,0.5)' : 'rgba(238,238,238,0.1)'}`,
@@ -98,8 +99,8 @@ export default function AdminLogin() {
             }}>Contraseña</label>
             <input
               type="password"
-              value={form.pass}
-              onChange={e => { setForm(p => ({ ...p, pass: e.target.value })); setError(''); }}
+              value={form.password}
+              onChange={e => { setForm(p => ({ ...p, password: e.target.value })); setError(''); }}
               onKeyDown={e => e.key === 'Enter' && handleSubmit()}
               placeholder="••••••••"
               style={{
@@ -115,7 +116,7 @@ export default function AdminLogin() {
             />
           </div>
 
-          {/* Error */}
+          {/* Mensaje de error */}
           {error && (
             <p style={{
               fontFamily: 'Poppins', fontSize: '0.82rem',
@@ -123,7 +124,7 @@ export default function AdminLogin() {
             }}>{error}</p>
           )}
 
-          {/* Botón */}
+          {/* Botón submit */}
           <button
             onClick={handleSubmit}
             disabled={loading}

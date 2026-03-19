@@ -5,6 +5,7 @@ const navLinks = [
   { to: '/admin/dashboard', icon: 'fa-gauge', label: 'Dashboard' },
   { to: '/admin/pedidos', icon: 'fa-bag-shopping', label: 'Pedidos' },
   { to: '/admin/productos', icon: 'fa-jar', label: 'Productos' },
+  { to: '/admin/usuarios', icon: 'fa-users', label: 'Usuarios' },
   { to: '/admin/configuracion', icon: 'fa-gear', label: 'Configuración' },
 ];
 
