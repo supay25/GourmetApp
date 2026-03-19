@@ -36,13 +36,27 @@ function ProductModal({ product, onClose }) {
 
         {/* Image side */}
         <div className="modal-image-side">
-          <div style={{
-            position: 'absolute', width: 200, height: 200, borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(240,73,63,0.15), transparent 70%)',
-            pointerEvents: 'none',
-          }} />
-          <img src={product.photo} alt={product.name}
-            style={{ width: '85%', objectFit: 'contain', position: 'relative', zIndex: 1 }} />
+          <div
+            style={{
+              position: "absolute",
+              width: 200,
+              height: 200,
+              borderRadius: "50%",
+              background:
+                "radial-gradient(circle, rgba(240,73,63,0.15), transparent 70%)",
+              pointerEvents: "none",
+            }}
+          />
+          <img
+            src={product.imagen}
+            alt={product.nombre}
+            style={{
+              width: "85%",
+              objectFit: "contain",
+              position: "relative",
+              zIndex: 1,
+            }}
+          />
         </div>
 
         {/* Info side */}
@@ -64,42 +78,76 @@ function ProductModal({ product, onClose }) {
             color: '#f0493f', marginBottom: 10,
           }}>✦ Producto artesanal</p>
 
-          <h2 style={{
-            fontFamily: 'Montserrat', fontWeight: 900,
-            fontSize: 'clamp(1.2rem, 3vw, 1.7rem)',
-            letterSpacing: '-0.02em', color: '#202020',
-            lineHeight: 1.1, marginBottom: 16,
-          }}>{product.name}</h2>
+          <h2
+            style={{
+              fontFamily: "Montserrat",
+              fontWeight: 900,
+              fontSize: "clamp(1.2rem, 3vw, 1.7rem)",
+              letterSpacing: "-0.02em",
+              color: "#eeeeee",
+              lineHeight: 1.1,
+              marginBottom: 16,
+            }}
+          >
+            {product.nombre}
+          </h2>
 
-          <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-            <span style={{
-              background: 'rgba(240,73,63,0.1)', border: '1px solid rgba(240,73,63,0.25)',
-              color: '#f0493f', borderRadius: 4, padding: '4px 12px',
-              fontFamily: 'Montserrat', fontSize: '0.8rem',
-              fontWeight: 700, letterSpacing: '0.08em',
-            }}>{product.weight}</span>
-            <span style={{
-              background: 'rgba(32,32,32,0.08)', border: '1px solid rgba(32,32,32,0.15)',
-              color: 'rgba(32,32,32,0.6)', borderRadius: 4, padding: '4px 12px',
-              fontFamily: 'Montserrat', fontSize: '0.8rem',
-              fontWeight: 600, letterSpacing: '0.08em',
-            }}>Artesanal</span>
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              marginBottom: 20,
+              flexWrap: "wrap",
+            }}
+          >
+            <span
+              style={{
+                background: "rgba(238,238,238,0.05)",
+                border: "1px solid rgba(238,238,238,0.1)",
+                color: "rgba(238,238,238,0.5)",
+                borderRadius: 4,
+                padding: "4px 12px",
+                fontFamily: "Montserrat",
+                fontSize: "0.72rem",
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+              }}
+            >
+              Artesanal
+            </span>
           </div>
 
           <div style={{ height: 1, background: 'rgba(32,32,32,0.15)', marginBottom: 16 }} />
 
-          <p style={{
-            fontFamily: 'Poppins', fontWeight: 300, fontSize: '1rem',
-            color: 'rgba(32,32,32,0.7)', lineHeight: 1.8, marginBottom: 20, flex: 1,
-          }}>{product.description}</p>
+          <p
+            style={{
+              fontFamily: "Poppins",
+              fontWeight: 300,
+              fontSize: "0.9rem",
+              color: "rgba(238,238,238,0.65)",
+              lineHeight: 1.8,
+              marginBottom: 20,
+              flex: 1,
+            }}
+          >
+            {product.descripcion}
+          </p>
 
           <div style={{ height: 1, background: 'rgba(32,32,32,0.15)', marginBottom: 16 }} />
 
-          <span style={{
-            fontFamily: 'Montserrat', fontWeight: 900,
-            fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
-            color: '#f0493f', lineHeight: 1, marginBottom: 16, display: 'block',
-          }}>{product.price}</span>
+          <span
+            style={{
+              fontFamily: "Montserrat",
+              fontWeight: 900,
+              fontSize: "clamp(1.6rem, 3vw, 2.2rem)",
+              color: "#f0493f",
+              lineHeight: 1,
+              marginBottom: 16,
+              display: "block",
+            }}
+          >
+            ₡{product.precio.toLocaleString()}
+          </span>
 
           {/* Cantidad + botón */}
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>

@@ -1,0 +1,1 @@
+npm run dev en la terminal server corre

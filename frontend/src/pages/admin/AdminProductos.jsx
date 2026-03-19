@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import AdminLayout from './AdminLayout';
-import productosData from '../../data/products';
+import { useEffect } from 'react';
+
+
 
 export default function AdminProductos() {
-  const [productos, setProductos] = useState(productosData);
+  const [productos, setProductos] = useState([]);
   const [modal, setModal] = useState(null); // null | 'crear' | producto
-  const [form, setForm] = useState({ name: '', description: '', weight: '', price: '', photo: '' });
+  const [form, setForm] = useState({ codigoProducto: '', nombre: '', descripcion: '', precio: '', stock: '', imagen: '' });
   const [confirmarEliminar, setConfirmarEliminar] = useState(null);
 
   const abrirCrear = () => {
-    setForm({ name: '', description: '', weight: '', price: '', photo: '' });
+    setForm({ codigoProducto: '', nombre: '', descripcion: '', precio: '', stock: '', imagen: '' });
     setModal('crear');
   };
 
@@ -18,20 +20,94 @@ export default function AdminProductos() {
     setModal(p);
   };
 
-  const guardar = () => {
-    if (!form.name || !form.price) return;
-    if (modal === 'crear') {
-      setProductos(prev => [...prev, { ...form }]);
-    } else {
-      setProductos(prev => prev.map(p => p.name === modal.name ? { ...form } : p));
+
+  useEffect(() => {
+    listaProductos()
+  }, [])
+
+
+
+  const listaProductos = async () => {
+    try {
+      const respuesta = await fetch("http://localhost:3000/api/productos", {
+        method: "GET"
+      });
+      const data = await respuesta.json();
+      setProductos(data)
+      console.log(data)
+
+    } catch (error) {
+      console.error("Error:", error)
     }
-    setModal(null);
+  }
+
+
+
+
+
+  const guardar = async () => {
+    if (!form.nombre) return;
+
+    try {
+      if (modal == 'crear') {
+        const producto = await fetch("http://localhost:3000/api/productos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(form)
+        });
+        const data = await producto.json();
+        console.log(data)
+        await listaProductos()
+         setModal(null)
+      }
+      else{
+         const producto = await fetch(`http://localhost:3000/api/productos/${modal._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(form)
+        });
+        const data = await producto.json();
+        console.log(data)
+        
+        await listaProductos()
+        setModal(null)
+      }
+
+
+
+
+    } catch (error) {
+      console.error("Error:", error)
+    }
   };
 
-  const eliminar = (nombre) => {
-    setProductos(prev => prev.filter(p => p.name !== nombre));
-    setConfirmarEliminar(null);
+
+
+
+
+
+  const eliminar = async (id) => {
+
+    try {
+
+      const producto = await fetch(`http://localhost:3000/api/productos/${id}`, {
+        method: "DELETE"
+      })
+      await listaProductos()
+      setConfirmarEliminar(null);
+
+    } catch (error) {
+      console.error("Error:", error)
+    }
+
   };
+
+
+
 
   return (
     <AdminLayout>
@@ -90,7 +166,7 @@ export default function AdminProductos() {
                   >
                     <i className="fa-solid fa-pen" style={{ marginRight: 6 }} />Editar
                   </button>
-                  <button onClick={() => setConfirmarEliminar(p.name)} style={{
+                  <button onClick={() => setConfirmarEliminar(p._id)} style={{
                     padding: '8px 12px', borderRadius: 4,
                     background: 'rgba(240,73,63,0.08)', border: 'none',
                     color: '#f0493f', cursor: 'pointer', transition: 'all 0.15s',
@@ -130,11 +206,12 @@ export default function AdminProductos() {
             </div>
 
             {[
-              { key: 'name', label: 'Nombre' },
-              { key: 'description', label: 'Descripción' },
-              { key: 'weight', label: 'Peso (ej: 220g)' },
-              { key: 'price', label: 'Precio (ej: ₡2.500)' },
-              { key: 'photo', label: 'Ruta de imagen (ej: /images/products/pesto_trad.png)' },
+              { key: 'codigoProducto', label: 'Código de Producto' },
+              { key: 'nombre', label: 'nombre' },
+              { key: 'descripcion', label: 'descripcion' },
+              { key: 'precio', label: 'Precio (ej: ₡2.500)' },
+              { key: 'stock', label: 'Cantidad del Producto' },
+              { key: 'imagen', label: 'imagen' }
             ].map(({ key, label }) => (
               <div key={key} style={{ marginBottom: 16 }}>
                 <label style={{
@@ -142,7 +219,7 @@ export default function AdminProductos() {
                   letterSpacing: '0.12em', textTransform: 'uppercase',
                   color: 'rgba(238,238,238,0.4)', display: 'block', marginBottom: 8,
                 }}>{label}</label>
-                {key === 'description' ? (
+                {key === 'descripcion' ? (
                   <textarea
                     value={form[key]}
                     onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))}
