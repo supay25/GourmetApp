@@ -63,8 +63,8 @@ function ProductModal({ product, onClose }) {
             }}
           />
           <img
-            src={product.photo}
-            alt={product.name}
+            src={product.imagen}
+            alt={product.nombre}
             style={{
               width: "85%",
               objectFit: "contain",
@@ -125,7 +125,7 @@ function ProductModal({ product, onClose }) {
               marginBottom: 16,
             }}
           >
-            {product.name}
+            {product.nombre}
           </h2>
 
           <div
@@ -136,21 +136,6 @@ function ProductModal({ product, onClose }) {
               flexWrap: "wrap",
             }}
           >
-            <span
-              style={{
-                background: "rgba(240,73,63,0.1)",
-                border: "1px solid rgba(240,73,63,0.2)",
-                color: "#f0493f",
-                borderRadius: 4,
-                padding: "4px 12px",
-                fontFamily: "Montserrat",
-                fontSize: "0.72rem",
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-              }}
-            >
-              {product.weight}
-            </span>
             <span
               style={{
                 background: "rgba(238,238,238,0.05)",
@@ -187,7 +172,7 @@ function ProductModal({ product, onClose }) {
               flex: 1,
             }}
           >
-            {product.description}
+            {product.descripcion}
           </p>
 
           <div
@@ -209,7 +194,7 @@ function ProductModal({ product, onClose }) {
               display: "block",
             }}
           >
-            {product.price}
+            ₡{product.precio.toLocaleString()}
           </span>
 
           {/* Cantidad + botón */}

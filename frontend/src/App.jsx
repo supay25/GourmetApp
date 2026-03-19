@@ -13,6 +13,10 @@ import Checkout from './pages/Checkout';
 import Sinpe from './pages/Sinpe';
 import Confirmacion from './pages/Confirmacion';
 import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminPedidos from './pages/admin/AdminPedidos';
+import AdminProductos from './pages/admin/AdminProductos';
+import AdminConfiguracion from './pages/admin/AdminConfiguracion';
 import './style.css';
 
 function App() {
@@ -22,6 +26,7 @@ function App() {
         <CartProvider>
           <ScrollToTop />
           <Routes>
+            {/* Rutas públicas */}
             <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
             <Route path="/productos" element={<><Navbar /><Productos /><Footer /></>} />
             <Route path="/contacto" element={<><Navbar /><Contacto /><Footer /></>} />
@@ -29,12 +34,13 @@ function App() {
             <Route path="/checkout" element={<><Navbar /><Checkout /></>} />
             <Route path="/pago" element={<Sinpe />} />
             <Route path="/confirmacion" element={<Confirmacion />} />
+
+            {/* Admin */}
             <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/*" element={
-              <AdminRoute>
-                <div>Dashboard próximamente</div>
-              </AdminRoute>
-            } />
+            <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            <Route path="/admin/pedidos" element={<AdminRoute><AdminPedidos /></AdminRoute>} />
+            <Route path="/admin/productos" element={<AdminRoute><AdminProductos /></AdminRoute>} />
+            <Route path="/admin/configuracion" element={<AdminRoute><AdminConfiguracion /></AdminRoute>} />
           </Routes>
         </CartProvider>
       </AuthProvider>
