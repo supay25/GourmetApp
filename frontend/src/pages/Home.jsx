@@ -17,7 +17,7 @@ const pilares = [
 export default function Home() {
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const destacados = products.slice(0, 4);
+  const destacados = products.slice(0, 3);
 
   return (
     <>
@@ -27,7 +27,6 @@ export default function Home() {
         display: 'flex', alignItems: 'center',
         overflow: 'hidden', background: '#202020',
       }}>
-        {/* Fondo estático */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 0,
           backgroundImage: 'url(/images/headers/home-banner - 1.png)',
@@ -39,7 +38,6 @@ export default function Home() {
         }} />
 
         <div className="hero-inner">
-          {/* Texto */}
           <div className="hero-text">
             <p style={{
               fontFamily: 'Montserrat', fontWeight: 700,
@@ -86,7 +84,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Bowl */}
           <div className="hero-bowl">
             <img src="/images/bowl.png" alt="Bowl Gourmetto"
               style={{ width: '100%', filter: 'drop-shadow(0 20px 60px rgba(240,73,63,0.3))' }} />
@@ -156,33 +153,35 @@ export default function Home() {
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(238,238,238,0.15)'; e.currentTarget.style.color = 'rgba(238,238,238,0.5)'; }}
             >Ver todos →</button>
           </div>
+
           <div className="destacados-grid">
             {destacados.map((product, i) => (
               <div key={i} style={{
-                background: '#272727', borderRadius: 6,
-                border: '1px solid rgba(238,238,238,0.05)',
+                background: '#eeeeee', borderRadius: 6,
+                border: '1px solid rgba(0,0,0,0.06)',
                 overflow: 'hidden', transition: 'border-color 0.2s, transform 0.2s', cursor: 'pointer',
               }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(240,73,63,0.25)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(238,238,238,0.05)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(240,73,63,0.4)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
                 <div style={{
-                  background: 'linear-gradient(135deg, #2a2a2a, #1e1e1e)',
-                  padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 160,
+                  background: 'linear-gradient(135deg, #e8e8e8, #d8d8d8)',
+                  padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 180,
                 }}>
-                  <img src={product.photo} alt={product.name} style={{ height: 120, objectFit: 'contain' }} />
+                  <img src={product.photo} alt={product.name} style={{ height: 140, objectFit: 'contain' }} />
                 </div>
-                <div style={{ padding: '16px 18px 20px' }}>
-                  <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.9rem', color: '#eeeeee', marginBottom: 4 }}>{product.name}</p>
-                  <p style={{ fontFamily: 'Montserrat', fontSize: '0.68rem', color: 'rgba(238,238,238,0.3)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>{product.weight}</p>
+                <div style={{ padding: '18px 20px 22px' }}>
+                  <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '1.4rem', color: '#202020', marginBottom: 4 }}>{product.name}</p>
+                  <p style={{ fontFamily: 'Montserrat', fontSize: '0.9rem', color: 'rgba(32,32,32,0.5)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14, fontWeight: '600' }}>{product.weight}</p>
+                  <div style={{ height: 1, background: 'rgba(32,32,32,0.15)', marginBottom: 14 }} />
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontFamily: 'Montserrat', fontWeight: 900, fontSize: '1rem', color: '#f0493f' }}>{product.price}</span>
+                    <span style={{ fontFamily: 'Montserrat', fontWeight: 900, fontSize: '1.1rem', color: '#f0493f' }}>{product.price}</span>
                     <button onClick={(e) => { e.stopPropagation(); addItem(product); }} style={{
                       background: '#f0493f', color: '#fff', border: 'none',
-                      padding: '8px 12px', borderRadius: 2, fontFamily: 'Montserrat',
-                      fontWeight: 700, fontSize: '0.68rem', cursor: 'pointer', transition: 'all 0.2s',
+                      padding: '9px 14px', borderRadius: 2, fontFamily: 'Montserrat',
+                      fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s',
                     }}
-                      onMouseEnter={e => { e.target.style.background = '#eeeeee'; e.target.style.color = '#272727'; }}
+                      onMouseEnter={e => { e.target.style.background = '#272727'; e.target.style.color = '#fff'; }}
                       onMouseLeave={e => { e.target.style.background = '#f0493f'; e.target.style.color = '#fff'; }}
                     >
                       <i className="fa-solid fa-cart-shopping"></i>
@@ -277,106 +276,53 @@ export default function Home() {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-18px); }
         }
-
-        /* ── Hero ── */
         .hero-inner {
           position: relative; z-index: 2;
           max-width: 1100px; margin: 0 auto;
-          padding: 120px 48px 80px;
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 40px;
+          padding: 120px 48px 80px; width: 100%;
+          display: flex; align-items: center;
+          justify-content: space-between; gap: 40px;
         }
         .hero-text { max-width: 560px; }
-        .hero-bowl {
-          flex-shrink: 0;
-          width: 320px;
-          animation: floatBowl 4s ease-in-out infinite;
-        }
-        .hero-buttons {
-          display: flex;
-          gap: 14px;
-          flex-wrap: wrap;
-        }
+        .hero-bowl { flex-shrink: 0; width: 320px; animation: floatBowl 4s ease-in-out infinite; }
+        .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
 
-        /* ── Secciones ── */
         .section-pilares   { background: #f0493f; padding: 100px 48px; }
         .section-destacados { background: #202020; padding: 100px 48px; }
         .section-testimonios { background: #272727; padding: 100px 48px; }
-        .section-cta {
-          padding: 120px 48px; text-align: center;
-          position: relative; overflow: hidden;
-        }
+        .section-cta { padding: 120px 48px; text-align: center; position: relative; overflow: hidden; }
 
-        /* ── Grids ── */
-        .pilares-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
-        }
+        .pilares-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .destacados-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          margin-bottom: 40px;
-          flex-wrap: wrap;
-          gap: 16px;
+          display: flex; justify-content: space-between;
+          align-items: flex-end; margin-bottom: 40px; flex-wrap: wrap; gap: 16px;
         }
-        .destacados-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 20px;
-        }
-        .testimonios-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
-        }
+        .destacados-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .testimonios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 
-        /* ── Tablet ── */
         @media (max-width: 900px) {
           .hero-bowl { width: 240px; }
           .pilares-grid { grid-template-columns: 1fr 1fr; }
           .destacados-grid { grid-template-columns: repeat(2, 1fr); }
           .testimonios-grid { grid-template-columns: 1fr 1fr; }
-          .section-pilares, .section-destacados,
-          .section-testimonios { padding: 72px 32px; }
+          .section-pilares, .section-destacados, .section-testimonios { padding: 72px 32px; }
           .section-cta { padding: 90px 32px; }
           .hero-inner { padding: 100px 32px 60px; }
         }
-
-        /* ── Mobile ── */
         @media (max-width: 600px) {
-          .hero-inner {
-            padding: 100px 20px 60px;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0;
-          }
+          .hero-inner { padding: 100px 20px 60px; flex-direction: column; align-items: flex-start; gap: 0; }
           .hero-text { max-width: 100%; }
-          .hero-bowl {
-            width: 180px;
-            position: absolute;
-            top: 130px;
-            right: 20px;
-            animation: floatBowl 4s ease-in-out infinite;
-          }
+          .hero-bowl { width: 180px; position: absolute; top: 130px; right: 20px; animation: floatBowl 4s ease-in-out infinite; }
           .hero-buttons { flex-direction: column; }
           .hero-buttons button { width: 100%; text-align: center; }
           .pilares-grid { grid-template-columns: 1fr; gap: 14px; }
-          .destacados-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+          .destacados-grid { grid-template-columns: 1fr; gap: 16px; }
           .testimonios-grid { grid-template-columns: 1fr; gap: 14px; }
           .destacados-header { flex-direction: column; align-items: flex-start; }
-          .section-pilares, .section-destacados,
-          .section-testimonios { padding: 56px 20px; }
+          .section-pilares, .section-destacados, .section-testimonios { padding: 56px 20px; }
           .section-cta { padding: 64px 20px; }
         }
-
-        /* ── Mobile muy pequeño ── */
         @media (max-width: 380px) {
-          .destacados-grid { grid-template-columns: 1fr; }
           .hero-bowl { width: 140px; top: 90px; right: 12px; }
         }
       `}</style>
