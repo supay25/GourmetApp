@@ -136,8 +136,8 @@ export default function Checkout() {
         numero: form.numero,
         direccion: form.direccion,
         lista: items.map((i) => ({
-          productoId: i.id,
-          nombre: i.name,
+          productoId: i._id,
+          nombre: i.nombre,
           cantidad: i.qty,
           precio: i.precio
         })),
@@ -154,7 +154,24 @@ export default function Checkout() {
       const numeroPedido = data.codigo
 
       setLoading(false);
-      clearCart();
+ 
+
+
+      const mensaje = `Hola! Soy ${form.nombre}
+Quiero hacer un pedido:
+
+${items.map(i => `- ${i.nombre} x${i.qty} - ₡${(i.precio * i.qty).toLocaleString()}`).join('\n')}
+
+Total: ₡${total.toLocaleString()}
+Dirección: ${form.direccion}
+Código: ${data.codigo}
+
+Espero confirmación antes de realizar el Sinpe 🙏`
+
+      const urlWsp = `https://wa.me/50664406338?text=${encodeURIComponent(mensaje)}`
+      window.open(urlWsp, '_blank')
+
+     clearCart();
       navigate("/pago", { state: { pedido: { ...pedido, numeroPedido } } });
     } catch (error) {
       console.error("Error:", error)

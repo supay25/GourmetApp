@@ -1,26 +1,34 @@
+import { useState, useEffect } from 'react';
 import AdminLayout from './AdminLayout';
 
-const stats = [
-  { label: 'Pedidos hoy', value: '4', icon: 'fa-bag-shopping', color: '#f0493f' },
-  { label: 'Pendientes de pago', value: '2', icon: 'fa-clock', color: '#f0a93f' },
-  { label: 'Confirmados', value: '1', icon: 'fa-circle-check', color: '#3fd68a' },
-  { label: 'Ventas del día', value: '₡10.000', icon: 'fa-colón-sign', color: '#3fa9f0' },
-];
-
-const pedidosRecientes = [
-  { id: 'GRM-001', cliente: 'María García', total: '₡5.000', estado: 'Pendiente', fecha: '16/03/2026' },
-  { id: 'GRM-002', cliente: 'Carlos Vargas', total: '₡2.500', estado: 'Confirmado', fecha: '16/03/2026' },
-  { id: 'GRM-003', cliente: 'Sofía Rojas', total: '₡7.500', estado: 'Pendiente', fecha: '15/03/2026' },
-  { id: 'GRM-004', cliente: 'Andrés Mora', total: '₡2.500', estado: 'Entregado', fecha: '15/03/2026' },
-];
-
 const estadoColor = {
-  'Pendiente': { bg: 'rgba(240,169,63,0.12)', color: '#f0a93f' },
-  'Confirmado': { bg: 'rgba(63,214,138,0.12)', color: '#3fd68a' },
-  'Entregado': { bg: 'rgba(238,238,238,0.08)', color: 'rgba(238,238,238,0.5)' },
+  'pendiente': { bg: 'rgba(240,169,63,0.12)', color: '#f0a93f' },
+  'confirmado': { bg: 'rgba(63,214,138,0.12)', color: '#3fd68a' },
+  'entregado': { bg: 'rgba(238,238,238,0.08)', color: 'rgba(238,238,238,0.5)' },
 };
 
 export default function AdminDashboard() {
+  const [pedidos, setPedidos] = useState([])
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/pedidos")
+      .then(r => r.json())
+      .then(data => setPedidos(data.slice(-4).reverse()))
+      .catch(console.error)
+  }, [])
+
+  // Stats calculadas desde los pedidos
+  const pendientes = pedidos.filter(p => p.estado === 'pendiente').length
+  const confirmados = pedidos.filter(p => p.estado === 'confirmado').length
+  const ventasTotales = pedidos.reduce((sum, p) => sum + p.total, 0)
+
+  const stats = [
+    { label: 'Pedidos totales', value: pedidos.length, icon: 'fa-bag-shopping', color: '#f0493f' },
+    { label: 'Pendientes de pago', value: pendientes, icon: 'fa-clock', color: '#f0a93f' },
+    { label: 'Confirmados', value: confirmados, icon: 'fa-circle-check', color: '#3fd68a' },
+    { label: 'Ventas totales', value: `₡${ventasTotales.toLocaleString()}`, icon: 'fa-coins', color: '#3fa9f0' },
+  ];
+
   return (
     <AdminLayout>
       <div style={{ padding: '36px 40px' }}>
@@ -104,27 +112,30 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {pedidosRecientes.map((p, i) => (
-                <tr key={i} style={{
-                  borderBottom: i < pedidosRecientes.length - 1 ? '1px solid rgba(238,238,238,0.04)' : 'none',
+              {pedidos.map((p, i) => (
+                <tr key={p._id} style={{
+                  borderBottom: i < pedidos.length - 1 ? '1px solid rgba(238,238,238,0.04)' : 'none',
                   transition: 'background 0.15s',
                 }}
                   onMouseEnter={e => e.currentTarget.style.background = 'rgba(238,238,238,0.03)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
-                  <td style={{ padding: '14px 24px', fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.85rem', color: '#f0493f' }}>{p.id}</td>
-                  <td style={{ padding: '14px 24px', fontFamily: 'Poppins', fontSize: '0.85rem', color: '#eeeeee' }}>{p.cliente}</td>
-                  <td style={{ padding: '14px 24px', fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.85rem', color: '#eeeeee' }}>{p.total}</td>
+                  <td style={{ padding: '14px 24px', fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.85rem', color: '#f0493f' }}>{p.codigo}</td>
+                  <td style={{ padding: '14px 24px', fontFamily: 'Poppins', fontSize: '0.85rem', color: '#eeeeee' }}>{p.nombre}</td>
+                  <td style={{ padding: '14px 24px', fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.85rem', color: '#eeeeee' }}>₡{p.total.toLocaleString()}</td>
                   <td style={{ padding: '14px 24px' }}>
                     <span style={{
                       fontFamily: 'Montserrat', fontWeight: 700,
                       fontSize: '0.72rem', letterSpacing: '0.06em',
                       padding: '4px 10px', borderRadius: 4,
-                      background: estadoColor[p.estado].bg,
-                      color: estadoColor[p.estado].color,
+                      background: estadoColor[p.estado]?.bg || 'rgba(238,238,238,0.08)',
+                      color: estadoColor[p.estado]?.color || 'rgba(238,238,238,0.4)',
+                      textTransform: 'capitalize'
                     }}>{p.estado}</span>
                   </td>
-                  <td style={{ padding: '14px 24px', fontFamily: 'Poppins', fontSize: '0.82rem', color: 'rgba(238,238,238,0.4)' }}>{p.fecha}</td>
+                  <td style={{ padding: '14px 24px', fontFamily: 'Poppins', fontSize: '0.82rem', color: 'rgba(238,238,238,0.4)' }}>
+                    {new Date(p.fecha).toLocaleDateString()}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -1,34 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminLayout from './AdminLayout';
 
-const pedidosMock = [
-  { id: 'GRM-001', cliente: 'María García', email: 'maria@correo.com', telefono: '88001234', direccion: 'Nicoya, frente al parque', items: [{ nombre: 'Pesto Tradicional', cantidad: 2, precio: '₡2.500' }, { nombre: 'Ajos Confitados', cantidad: 1, precio: '₡2.500' }], total: '₡7.500', estado: 'Pendiente', fecha: '16/03/2026' },
-  { id: 'GRM-002', cliente: 'Carlos Vargas', email: 'carlos@correo.com', telefono: '88005678', direccion: 'Santa Cruz, 200m norte de la iglesia', items: [{ nombre: 'Mermelada de Higos', cantidad: 1, precio: '₡2.500' }], total: '₡2.500', estado: 'Confirmado', fecha: '16/03/2026' },
-  { id: 'GRM-003', cliente: 'Sofía Rojas', email: 'sofia@correo.com', telefono: '88009012', direccion: 'Sámara, frente a la playa', items: [{ nombre: 'Pesto de Tomates', cantidad: 1, precio: '₡2.500' }, { nombre: 'Cebollas Encurtidas', cantidad: 2, precio: '₡2.500' }], total: '₡7.500', estado: 'Pendiente', fecha: '15/03/2026' },
-  { id: 'GRM-004', cliente: 'Andrés Mora', email: 'andres@correo.com', telefono: '88003456', direccion: 'Nicoya centro', items: [{ nombre: 'Tomates Confitados', cantidad: 1, precio: '₡2.500' }], total: '₡2.500', estado: 'Entregado', fecha: '15/03/2026' },
-  { id: 'GRM-005', cliente: 'Laura Jiménez', email: 'laura@correo.com', telefono: '88007890', direccion: 'Nosara, urbanización Las Huacas', items: [{ nombre: 'Mermelada de Frutos Rojos', cantidad: 3, precio: '₡2.500' }], total: '₡7.500', estado: 'Confirmado', fecha: '14/03/2026' },
-];
-
 const estadoConfig = {
-  'Pendiente': { bg: 'rgba(240,169,63,0.12)', color: '#f0a93f' },
-  'Confirmado': { bg: 'rgba(63,214,138,0.12)', color: '#3fd68a' },
-  'Entregado': { bg: 'rgba(238,238,238,0.08)', color: 'rgba(238,238,238,0.4)' },
+  'pendiente': { bg: 'rgba(240,169,63,0.12)', color: '#f0a93f' },
+  'confirmado': { bg: 'rgba(63,214,138,0.12)', color: '#3fd68a' },
+  'entregado': { bg: 'rgba(238,238,238,0.08)', color: 'rgba(238,238,238,0.4)' },
 };
 
-const filtros = ['Todos', 'Pendiente', 'Confirmado', 'Entregado'];
+const filtros = ['Todos', 'pendiente', 'confirmado', 'entregado'];
 
 export default function AdminPedidos() {
   const [filtro, setFiltro] = useState('Todos');
   const [detalle, setDetalle] = useState(null);
-  const [pedidos, setPedidos] = useState(pedidosMock);
+  const [pedidos, setPedidos] = useState([]);
 
   const pedidosFiltrados = filtro === 'Todos'
     ? pedidos
     : pedidos.filter(p => p.estado === filtro);
 
-  const cambiarEstado = (id, nuevoEstado) => {
-    setPedidos(prev => prev.map(p => p.id === id ? { ...p, estado: nuevoEstado } : p));
-    if (detalle?.id === id) setDetalle(prev => ({ ...prev, estado: nuevoEstado }));
+  useEffect(() => {
+    listaPedidos()
+  }, [])
+
+  const listaPedidos = async () => {
+    try {
+      const respuesta = await fetch("http://localhost:3000/api/pedidos", {
+        method: "GET"
+      });
+      const data = await respuesta.json();
+      setPedidos(data)
+    } catch (error) {
+      console.error("Error:", error)
+    }
+  }
+
+  const cambiarEstado = async (id, nuevoEstado) => {
+    try {
+      await fetch(`http://localhost:3000/api/pedidos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado: nuevoEstado })
+      });
+      await listaPedidos()
+      if (detalle?._id === id) setDetalle(prev => ({ ...prev, estado: nuevoEstado }));
+    } catch (error) {
+      console.error("Error:", error)
+    }
   };
 
   return (
@@ -56,6 +73,7 @@ export default function AdminPedidos() {
               cursor: 'pointer', transition: 'all 0.15s',
               background: filtro === f ? '#f0493f' : 'rgba(238,238,238,0.07)',
               color: filtro === f ? '#fff' : 'rgba(238,238,238,0.5)',
+              textTransform: 'capitalize'
             }}>{f}</button>
           ))}
         </div>
@@ -77,25 +95,28 @@ export default function AdminPedidos() {
             </thead>
             <tbody>
               {pedidosFiltrados.map((p, i) => (
-                <tr key={p.id} style={{
+                <tr key={p._id} style={{
                   borderBottom: i < pedidosFiltrados.length - 1 ? '1px solid rgba(238,238,238,0.04)' : 'none',
                   transition: 'background 0.15s',
                 }}
                   onMouseEnter={e => e.currentTarget.style.background = 'rgba(238,238,238,0.03)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
-                  <td style={{ padding: '14px 20px', fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.85rem', color: '#f0493f' }}>{p.id}</td>
-                  <td style={{ padding: '14px 20px', fontFamily: 'Poppins', fontSize: '0.85rem', color: '#eeeeee' }}>{p.cliente}</td>
-                  <td style={{ padding: '14px 20px', fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.85rem', color: '#eeeeee' }}>{p.total}</td>
+                  <td style={{ padding: '14px 20px', fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.85rem', color: '#f0493f' }}>{p.codigo}</td>
+                  <td style={{ padding: '14px 20px', fontFamily: 'Poppins', fontSize: '0.85rem', color: '#eeeeee' }}>{p.nombre}</td>
+                  <td style={{ padding: '14px 20px', fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.85rem', color: '#eeeeee' }}>₡{p.total.toLocaleString()}</td>
                   <td style={{ padding: '14px 20px' }}>
                     <span style={{
                       fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.72rem',
                       padding: '4px 10px', borderRadius: 4,
-                      background: estadoConfig[p.estado].bg,
-                      color: estadoConfig[p.estado].color,
+                      background: estadoConfig[p.estado]?.bg || 'rgba(238,238,238,0.08)',
+                      color: estadoConfig[p.estado]?.color || 'rgba(238,238,238,0.4)',
+                      textTransform: 'capitalize'
                     }}>{p.estado}</span>
                   </td>
-                  <td style={{ padding: '14px 20px', fontFamily: 'Poppins', fontSize: '0.82rem', color: 'rgba(238,238,238,0.4)' }}>{p.fecha}</td>
+                  <td style={{ padding: '14px 20px', fontFamily: 'Poppins', fontSize: '0.82rem', color: 'rgba(238,238,238,0.4)' }}>
+                    {new Date(p.fecha).toLocaleDateString()}
+                  </td>
                   <td style={{ padding: '14px 20px' }}>
                     <button onClick={() => setDetalle(p)} style={{
                       background: 'rgba(238,238,238,0.07)', border: 'none',
@@ -131,8 +152,10 @@ export default function AdminPedidos() {
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
               <div>
-                <p style={{ fontFamily: 'Montserrat', fontWeight: 900, fontSize: '1.1rem', color: '#f0493f', marginBottom: 4 }}>{detalle.id}</p>
-                <p style={{ fontFamily: 'Poppins', fontSize: '0.82rem', color: 'rgba(238,238,238,0.4)' }}>{detalle.fecha}</p>
+                <p style={{ fontFamily: 'Montserrat', fontWeight: 900, fontSize: '1.1rem', color: '#f0493f', marginBottom: 4 }}>{detalle.codigo}</p>
+                <p style={{ fontFamily: 'Poppins', fontSize: '0.82rem', color: 'rgba(238,238,238,0.4)' }}>
+                  {new Date(detalle.fecha).toLocaleDateString()}
+                </p>
               </div>
               <button onClick={() => setDetalle(null)} style={{
                 background: 'transparent', border: 'none', color: 'rgba(238,238,238,0.3)',
@@ -143,27 +166,30 @@ export default function AdminPedidos() {
             {/* Cliente */}
             <div style={{ background: '#1e1e1e', borderRadius: 6, padding: '16px 20px', marginBottom: 16 }}>
               <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(238,238,238,0.3)', marginBottom: 12 }}>Cliente</p>
-              <p style={{ fontFamily: 'Poppins', fontSize: '0.9rem', color: '#eeeeee', marginBottom: 4 }}>{detalle.cliente}</p>
-              <p style={{ fontFamily: 'Poppins', fontSize: '0.82rem', color: 'rgba(238,238,238,0.4)', marginBottom: 4 }}>{detalle.email}</p>
-              <p style={{ fontFamily: 'Poppins', fontSize: '0.82rem', color: 'rgba(238,238,238,0.4)', marginBottom: 4 }}>{detalle.telefono}</p>
+              <p style={{ fontFamily: 'Poppins', fontSize: '0.9rem', color: '#eeeeee', marginBottom: 4 }}>{detalle.nombre}</p>
+              <p style={{ fontFamily: 'Poppins', fontSize: '0.82rem', color: 'rgba(238,238,238,0.4)', marginBottom: 4 }}>{detalle.numero}</p>
               <p style={{ fontFamily: 'Poppins', fontSize: '0.82rem', color: 'rgba(238,238,238,0.4)' }}>{detalle.direccion}</p>
             </div>
 
             {/* Items */}
             <div style={{ background: '#1e1e1e', borderRadius: 6, padding: '16px 20px', marginBottom: 16 }}>
               <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(238,238,238,0.3)', marginBottom: 12 }}>Productos</p>
-              {detalle.items.map((item, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: i < detalle.items.length - 1 ? 10 : 0 }}>
+              {detalle.lista.map((item, i) => (
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: i < detalle.lista.length - 1 ? 10 : 0 }}>
                   <span style={{ fontFamily: 'Poppins', fontSize: '0.88rem', color: 'rgba(238,238,238,0.7)' }}>
                     {item.nombre} <span style={{ color: 'rgba(238,238,238,0.35)' }}>x{item.cantidad}</span>
                   </span>
-                  <span style={{ fontFamily: 'Montserrat', fontWeight: 600, fontSize: '0.88rem', color: '#eeeeee' }}>{item.precio}</span>
+                  <span style={{ fontFamily: 'Montserrat', fontWeight: 600, fontSize: '0.88rem', color: '#eeeeee' }}>
+                    ₡{item.precio.toLocaleString()}
+                  </span>
                 </div>
               ))}
               <div style={{ height: 1, background: 'rgba(238,238,238,0.07)', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontFamily: 'Montserrat', fontWeight: 700, color: '#eeeeee' }}>Total</span>
-                <span style={{ fontFamily: 'Montserrat', fontWeight: 900, fontSize: '1.1rem', color: '#f0493f' }}>{detalle.total}</span>
+                <span style={{ fontFamily: 'Montserrat', fontWeight: 900, fontSize: '1.1rem', color: '#f0493f' }}>
+                  ₡{detalle.total.toLocaleString()}
+                </span>
               </div>
             </div>
 
@@ -171,14 +197,14 @@ export default function AdminPedidos() {
             <div>
               <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(238,238,238,0.3)', marginBottom: 12 }}>Estado del pedido</p>
               <div style={{ display: 'flex', gap: 8 }}>
-                {['Pendiente', 'Confirmado', 'Entregado'].map(estado => (
-                  <button key={estado} onClick={() => cambiarEstado(detalle.id, estado)} style={{
+                {['pendiente', 'confirmado', 'entregado'].map(estado => (
+                  <button key={estado} onClick={() => cambiarEstado(detalle._id, estado)} style={{
                     flex: 1, padding: '10px', borderRadius: 4,
                     border: `1px solid ${detalle.estado === estado ? estadoConfig[estado].color : 'rgba(238,238,238,0.08)'}`,
                     background: detalle.estado === estado ? estadoConfig[estado].bg : 'transparent',
                     color: detalle.estado === estado ? estadoConfig[estado].color : 'rgba(238,238,238,0.4)',
                     fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.75rem',
-                    cursor: 'pointer', transition: 'all 0.15s',
+                    cursor: 'pointer', transition: 'all 0.15s', textTransform: 'capitalize'
                   }}>{estado}</button>
                 ))}
               </div>
