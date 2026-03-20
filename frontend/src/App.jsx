@@ -18,6 +18,7 @@ import AdminPedidos from './pages/admin/AdminPedidos';
 import AdminProductos from './pages/admin/AdminProductos';
 import AdminUsuarios from './pages/admin/AdminUsuarios';
 import AdminConfiguracion from './pages/admin/AdminConfiguracion';
+import AdminGaleria from './pages/admin/AdminGaleria';
 import './style.css';
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
             <Route path="/admin/pedidos" element={<AdminRoute><AdminPedidos /></AdminRoute>} />
             <Route path="/admin/productos" element={<AdminRoute><AdminProductos /></AdminRoute>} />
             <Route path="/admin/configuracion" element={<AdminRoute><AdminConfiguracion /></AdminRoute>} />
+            <Route path="/admin/galeria" element={<AdminRoute><AdminGaleria /></AdminRoute>} />
           </Routes>
         </CartProvider>
       </AuthProvider>
