@@ -10,7 +10,8 @@ import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import productoRouter from "./routes/productoRoutes.js";
 import pedidoRouter from "./routes/pedidoRoutes.js";
-import mediaRoutes from "./routes/media.routes.js"; // ← agregar
+import mediaRoutes from "./routes/media.routes.js"; 
+import publicRoutes from './routes/public.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,7 +24,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api/productos", productoRouter);
 app.use("/api/pedidos", pedidoRouter);
-app.use("/api/media", mediaRoutes); // ← agregar
+app.use("/api/media", mediaRoutes); 
+app.use('/api/public', publicRoutes);
 
 connectDB()
   .then(() => {

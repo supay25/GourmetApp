@@ -12,6 +12,10 @@ export default function Confirmacion() {
 
   if (!pedido) return null;
 
+  // Mensaje de WhatsApp para notificar al negocio
+  const mensajeWhatsApp = `Hola! Acabo de realizar el pedido ${pedido.numeroPedido} por ₡${pedido.total.toLocaleString()} y ya subí el comprobante de pago. Quedo pendiente de confirmación. Gracias! 🙏`;
+  const urlWhatsApp = `https://wa.me/50663818443?text=${encodeURIComponent(mensajeWhatsApp)}`;
+
   return (
     <section
       style={{
@@ -24,6 +28,7 @@ export default function Confirmacion() {
       }}
     >
       <div className="confirm-wrapper">
+
         {/* Check */}
         <div
           style={{
@@ -83,8 +88,7 @@ export default function Confirmacion() {
           }}
         >
           Hemos recibido tu pedido y estamos esperando la confirmación del pago.
-          Nos pondremos en contacto con vos a la brevedad para coordinar la
-          entrega.
+          Nos pondremos en contacto con vos a la brevedad para coordinar la entrega.
         </p>
 
         {/* Número de pedido */}
@@ -130,7 +134,7 @@ export default function Confirmacion() {
             Resumen
           </p>
 
-          {pedido.items.map((item, i) => (
+          {pedido.items?.map((item, i) => (
             <div
               key={i}
               style={{
@@ -159,7 +163,7 @@ export default function Confirmacion() {
                   color: "#eeeeee",
                 }}
               >
-                {item.precio}
+                ₡{item.precio.toLocaleString()}
               </span>
             </div>
           ))}
@@ -195,6 +199,36 @@ export default function Confirmacion() {
           </div>
         </div>
 
+        {/* Botón WhatsApp — notificar al negocio */}
+        <a
+          href={urlWhatsApp}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "block",
+            width: "100%",
+            marginBottom: 12,
+            background: "#25D366",
+            color: "#fff",
+            padding: "14px 32px",
+            borderRadius: 2,
+            boxSizing: "border-box",
+            fontFamily: "Montserrat",
+            fontWeight: 700,
+            fontSize: "0.85rem",
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            cursor: "pointer",
+            textDecoration: "none",
+            textAlign: "center",
+            transition: "all 0.2s",
+          }}
+        >
+          <i className="fa-brands fa-whatsapp" style={{ marginRight: 8 }} />
+          Notificar por WhatsApp
+        </a>
+
+        {/* Volver al inicio */}
         <button
           onClick={() => navigate("/")}
           style={{
@@ -226,36 +260,36 @@ export default function Confirmacion() {
       </div>
 
       <style>{`
-  .confirm-wrapper {
-    max-width: 560px;
-    width: 100%;
-    text-align: center;
-  }
-  .confirm-numero {
-    background: #272727;
-    border: 1px solid rgba(238,238,238,0.07);
-    border-radius: 6px;
-    padding: 20px 28px;
-    margin-bottom: 20px;
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: left;
-  }
-  .confirm-resumen {
-    background: #272727;
-    border: 1px solid rgba(238,238,238,0.05);
-    border-radius: 6px;
-    padding: 20px 28px;
-    margin-bottom: 32px;
-    text-align: left;
-    box-sizing: border-box;
-  }
-  @media (max-width: 600px) {
-    .confirm-numero { padding: 16px 20px; }
-    .confirm-resumen { padding: 16px 20px; }
-  }
-`}</style>
+        .confirm-wrapper {
+          max-width: 560px;
+          width: 100%;
+          text-align: center;
+        }
+        .confirm-numero {
+          background: #272727;
+          border: 1px solid rgba(238,238,238,0.07);
+          border-radius: 6px;
+          padding: 20px 28px;
+          margin-bottom: 20px;
+          display: block;
+          width: 100%;
+          box-sizing: border-box;
+          text-align: left;
+        }
+        .confirm-resumen {
+          background: #272727;
+          border: 1px solid rgba(238,238,238,0.05);
+          border-radius: 6px;
+          padding: 20px 28px;
+          margin-bottom: 32px;
+          text-align: left;
+          box-sizing: border-box;
+        }
+        @media (max-width: 600px) {
+          .confirm-numero { padding: 16px 20px; }
+          .confirm-resumen { padding: 16px 20px; }
+        }
+      `}</style>
     </section>
   );
 }

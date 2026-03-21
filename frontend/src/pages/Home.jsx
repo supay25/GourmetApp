@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import products from '../data/products';
+
+const API = import.meta.env.VITE_API_URL;
 
 const testimonios = [
   { nombre: 'Andrea M.', texto: 'El pesto tradicional es increíble, lo uso en todo. Ya pedí tres veces y no me decepciona.', estrellas: 5 },
@@ -14,10 +16,38 @@ const pilares = [
   { icon: '🇨🇷', titulo: 'Hecho en Costa Rica', desc: 'Un emprendimiento tico que apoya la gastronomía local y lleva sabor auténtico a tu mesa.' },
 ];
 
+// Helper — decide si un producto debe mostrarse
+const esVisible = (p) => {
+  if (p.tipo === 'tiempo_limitado') {
+    if (!p.fechaInicio || !p.fechaFin) return false;
+    const ahora = new Date();
+    return ahora >= new Date(p.fechaInicio) && ahora <= new Date(p.fechaFin);
+  }
+  return true;
+};
+
+const estaAgotado = (p) => p.tipo === 'stock' && p.stock === 0;
+
 export default function Home() {
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const destacados = products.slice(0, 3);
+  const [productos, setProductos] = useState([]);
+
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const res = await fetch(`${API}/api/productos`);
+        const data = await res.json();
+        setProductos(data);
+      } catch (e) {
+        console.error('Error al cargar productos:', e);
+      }
+    };
+    fetchProductos();
+  }, []);
+
+  // Solo mostrar los 3 primeros productos visibles en destacados
+  const destacados = productos.filter(esVisible).slice(0, 3);
 
   return (
     <>
@@ -32,17 +62,13 @@ export default function Home() {
           backgroundImage: 'url(/images/headers/home-banner - 1.png)',
           backgroundSize: 'cover', backgroundPosition: 'center',
         }} />
-        <div style={{
-          position: 'absolute', inset: 0, zIndex: 1,
-          background: 'rgba(20,20,20,0.75)',
-        }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'rgba(20,20,20,0.75)' }} />
 
         <div className="hero-inner">
           <div className="hero-text">
             <p style={{
-              fontFamily: 'Montserrat', fontWeight: 700,
-              fontSize: '0.7rem', letterSpacing: '0.25em',
-              textTransform: 'uppercase', color: '#f0493f', marginBottom: 20,
+              fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.7rem',
+              letterSpacing: '0.25em', textTransform: 'uppercase', color: '#f0493f', marginBottom: 20,
             }}>✦ Gastronomía artesanal</p>
             <h1 style={{
               fontFamily: 'Montserrat', fontWeight: 900,
@@ -53,30 +79,26 @@ export default function Home() {
               SABOR<br />QUE SE<br /><span style={{ color: '#f0493f' }}>SIENTE</span>
             </h1>
             <p style={{
-              fontFamily: 'Poppins', fontWeight: 300,
-              fontSize: '1rem', color: 'rgba(238,238,238,0.6)',
-              lineHeight: 1.8, marginBottom: 36, maxWidth: 400,
+              fontFamily: 'Poppins', fontWeight: 300, fontSize: '1rem',
+              color: 'rgba(238,238,238,0.6)', lineHeight: 1.8, marginBottom: 36, maxWidth: 400,
             }}>
               Productos artesanales elaborados con ingredientes frescos, pensados para elevar cada plato.
             </p>
             <div className="hero-buttons">
               <button onClick={() => navigate('/productos')} style={{
                 background: '#f0493f', color: '#fff', border: 'none',
-                padding: '15px 32px', borderRadius: 2,
-                fontFamily: 'Montserrat', fontWeight: 700,
-                fontSize: '0.85rem', letterSpacing: '0.12em',
-                textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s',
+                padding: '15px 32px', borderRadius: 2, fontFamily: 'Montserrat', fontWeight: 700,
+                fontSize: '0.85rem', letterSpacing: '0.12em', textTransform: 'uppercase',
+                cursor: 'pointer', transition: 'all 0.2s',
               }}
                 onMouseEnter={e => { e.target.style.background = '#eeeeee'; e.target.style.color = '#272727'; }}
                 onMouseLeave={e => { e.target.style.background = '#f0493f'; e.target.style.color = '#fff'; }}
               >Ver productos →</button>
               <button onClick={() => document.getElementById('pilares')?.scrollIntoView({ behavior: 'smooth' })} style={{
                 background: 'transparent', color: 'rgba(238,238,238,0.6)',
-                border: '1px solid rgba(238,238,238,0.2)',
-                padding: '15px 32px', borderRadius: 2,
-                fontFamily: 'Montserrat', fontWeight: 600,
-                fontSize: '0.85rem', letterSpacing: '0.12em',
-                textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s',
+                border: '1px solid rgba(238,238,238,0.2)', padding: '15px 32px', borderRadius: 2,
+                fontFamily: 'Montserrat', fontWeight: 600, fontSize: '0.85rem',
+                letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s',
               }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(238,238,238,0.5)'; e.currentTarget.style.color = '#eeeeee'; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(238,238,238,0.2)'; e.currentTarget.style.color = 'rgba(238,238,238,0.6)'; }}
@@ -96,24 +118,19 @@ export default function Home() {
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 56 }}>
             <p style={{
-              fontFamily: 'Montserrat', fontWeight: 700,
-              fontSize: '0.7rem', letterSpacing: '0.2em',
-              textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: 16,
+              fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.7rem',
+              letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: 16,
             }}>✦ Por qué Gourmetto</p>
             <h2 style={{
               fontFamily: 'Montserrat', fontWeight: 900,
-              fontSize: 'clamp(1.8rem, 4vw, 3.5rem)',
-              letterSpacing: '-0.03em', color: '#fff', lineHeight: 1,
-            }}>
-              HECHO CON <span style={{ color: '#272727' }}>INTENCIÓN</span>
-            </h2>
+              fontSize: 'clamp(1.8rem, 4vw, 3.5rem)', letterSpacing: '-0.03em', color: '#fff', lineHeight: 1,
+            }}>HECHO CON <span style={{ color: '#272727' }}>INTENCIÓN</span></h2>
           </div>
           <div className="pilares-grid">
             {pilares.map((p, i) => (
               <div key={i} style={{
                 background: 'rgba(0,0,0,0.15)', borderRadius: 6,
-                border: '1px solid rgba(255,255,255,0.15)',
-                padding: '32px 28px', transition: 'background 0.2s',
+                border: '1px solid rgba(255,255,255,0.15)', padding: '32px 28px', transition: 'background 0.2s',
               }}
                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.25)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
@@ -138,8 +155,7 @@ export default function Home() {
               }}>✦ Lo más pedido</p>
               <h2 style={{
                 fontFamily: 'Montserrat', fontWeight: 900,
-                fontSize: 'clamp(1.8rem, 4vw, 3rem)',
-                letterSpacing: '-0.03em', color: '#eeeeee', lineHeight: 1,
+                fontSize: 'clamp(1.8rem, 4vw, 3rem)', letterSpacing: '-0.03em', color: '#eeeeee', lineHeight: 1,
               }}>PRODUCTOS<br /><span style={{ color: '#f0493f' }}>DESTACADOS</span></h2>
             </div>
             <button onClick={() => navigate('/productos')} style={{
@@ -155,41 +171,89 @@ export default function Home() {
           </div>
 
           <div className="destacados-grid">
-            {destacados.map((product, i) => (
-              <div key={i} style={{
-                background: '#eeeeee', borderRadius: 6,
-                border: '1px solid rgba(0,0,0,0.06)',
-                overflow: 'hidden', transition: 'border-color 0.2s, transform 0.2s', cursor: 'pointer',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(240,73,63,0.4)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-              >
-                <div style={{
-                  background: 'linear-gradient(135deg, #e8e8e8, #d8d8d8)',
-                  padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 180,
-                }}>
-                  <img src={product.photo} alt={product.name} style={{ height: 140, objectFit: 'contain' }} />
-                </div>
-                <div style={{ padding: '18px 20px 22px' }}>
-                  <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '1.4rem', color: '#202020', marginBottom: 4 }}>{product.name}</p>
-                  <p style={{ fontFamily: 'Montserrat', fontSize: '0.9rem', color: 'rgba(32,32,32,0.5)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14, fontWeight: '600' }}>{product.weight}</p>
-                  <div style={{ height: 1, background: 'rgba(32,32,32,0.15)', marginBottom: 14 }} />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontFamily: 'Montserrat', fontWeight: 900, fontSize: '1.1rem', color: '#f0493f' }}>{product.price}</span>
-                    <button onClick={(e) => { e.stopPropagation(); addItem(product); }} style={{
-                      background: '#f0493f', color: '#fff', border: 'none',
-                      padding: '9px 14px', borderRadius: 2, fontFamily: 'Montserrat',
-                      fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s',
-                    }}
-                      onMouseEnter={e => { e.target.style.background = '#272727'; e.target.style.color = '#fff'; }}
-                      onMouseLeave={e => { e.target.style.background = '#f0493f'; e.target.style.color = '#fff'; }}
-                    >
-                      <i className="fa-solid fa-cart-shopping"></i>
-                    </button>
+            {destacados.map((p, i) => {
+              const agotado = estaAgotado(p);
+              return (
+                <div key={p._id || i} style={{
+                  background: '#eeeeee', borderRadius: 6,
+                  border: '1px solid rgba(0,0,0,0.06)', overflow: 'hidden',
+                  transition: 'border-color 0.2s, transform 0.2s',
+                  cursor: agotado ? 'default' : 'pointer',
+                  opacity: agotado ? 0.75 : 1,
+                }}
+                  onMouseEnter={e => { if (!agotado) { e.currentTarget.style.borderColor = 'rgba(240,73,63,0.4)'; e.currentTarget.style.transform = 'translateY(-4px)'; } }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  <div style={{
+                    background: 'linear-gradient(135deg, #e8e8e8, #d8d8d8)',
+                    padding: 24, display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', height: 180, position: 'relative',
+                  }}>
+                    <img src={p.imagen} alt={p.nombre}
+                      style={{ height: 140, objectFit: 'contain', opacity: agotado ? 0.4 : 1 }} />
+
+                    {/* Badge tiempo limitado */}
+                    {p.tipo === 'tiempo_limitado' && (
+                      <span style={{
+                        position: 'absolute', top: 8, left: 8,
+                        background: 'rgba(63,169,240,0.9)', color: '#fff',
+                        fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.6rem',
+                        letterSpacing: '0.06em', padding: '3px 8px', borderRadius: 3,
+                        textTransform: 'uppercase',
+                      }}>⏰ Tiempo limitado</span>
+                    )}
+
+                    {/* Overlay agotado */}
+                    {agotado && (
+                      <div style={{
+                        position: 'absolute', inset: 0, background: 'rgba(200,200,200,0.5)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        <span style={{
+                          background: '#fff', color: 'rgba(32,32,32,0.6)',
+                          fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.65rem',
+                          letterSpacing: '0.08em', textTransform: 'uppercase',
+                          padding: '6px 12px', borderRadius: 3,
+                          border: '1px solid rgba(32,32,32,0.1)',
+                        }}>Agotado temporalmente</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={{ padding: '18px 20px 22px' }}>
+                    <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '1.4rem', color: '#202020', marginBottom: 4 }}>{p.nombre}</p>
+                    <p style={{
+                      fontFamily: 'Montserrat', fontSize: '0.9rem', letterSpacing: '0.08em',
+                      textTransform: 'uppercase', marginBottom: 14, fontWeight: 600,
+                      color: agotado ? '#f0493f' : p.tipo === 'tiempo_limitado' ? '#3fa9f0' : 'rgba(32,32,32,0.5)',
+                    }}>
+                      {agotado ? 'Sin stock' : p.tipo === 'tiempo_limitado' ? 'Tiempo limitado' : `Stock: ${p.stock}`}
+                    </p>
+                    <div style={{ height: 1, background: 'rgba(32,32,32,0.15)', marginBottom: 14 }} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontFamily: 'Montserrat', fontWeight: 900, fontSize: '1.1rem', color: '#f0493f' }}>
+                        ₡{p.precio.toLocaleString()}
+                      </span>
+                      <button
+                        disabled={agotado}
+                        onClick={(e) => { e.stopPropagation(); if (!agotado) addItem(p); }}
+                        style={{
+                          background: agotado ? 'rgba(32,32,32,0.15)' : '#f0493f',
+                          color: agotado ? 'rgba(32,32,32,0.3)' : '#fff',
+                          border: 'none', padding: '9px 14px', borderRadius: 2,
+                          fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.75rem',
+                          cursor: agotado ? 'not-allowed' : 'pointer', transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={e => { if (!agotado) { e.target.style.background = '#272727'; e.target.style.color = '#fff'; } }}
+                        onMouseLeave={e => { if (!agotado) { e.target.style.background = '#f0493f'; e.target.style.color = '#fff'; } }}
+                      >
+                        <i className="fa-solid fa-cart-shopping"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -204,8 +268,7 @@ export default function Home() {
             }}>✦ Lo que dicen</p>
             <h2 style={{
               fontFamily: 'Montserrat', fontWeight: 900,
-              fontSize: 'clamp(1.8rem, 4vw, 3.5rem)',
-              letterSpacing: '-0.03em', color: '#eeeeee', lineHeight: 1,
+              fontSize: 'clamp(1.8rem, 4vw, 3.5rem)', letterSpacing: '-0.03em', color: '#eeeeee', lineHeight: 1,
             }}>CLIENTES QUE<br /><span style={{ color: '#f0493f' }}>NOS ELIGEN</span></h2>
           </div>
           <div className="testimonios-grid">
@@ -245,9 +308,8 @@ export default function Home() {
           }}>✦ ¿Listo para probar?</p>
           <h2 style={{
             fontFamily: 'Montserrat', fontWeight: 900,
-            fontSize: 'clamp(2rem, 5vw, 5rem)',
-            letterSpacing: '-0.04em', color: '#eeeeee',
-            lineHeight: 0.95, marginBottom: 24,
+            fontSize: 'clamp(2rem, 5vw, 5rem)', letterSpacing: '-0.04em',
+            color: '#eeeeee', lineHeight: 0.95, marginBottom: 24,
           }}>
             LLEVÁ EL SABOR<br /><span style={{ color: '#f0493f' }}>A TU MESA</span>
           </h2>
@@ -277,11 +339,9 @@ export default function Home() {
           50% { transform: translateY(-18px); }
         }
         .hero-inner {
-          position: relative; z-index: 2;
-          max-width: 1100px; margin: 0 auto;
+          position: relative; z-index: 2; max-width: 1100px; margin: 0 auto;
           padding: 120px 48px 80px; width: 100%;
-          display: flex; align-items: center;
-          justify-content: space-between; gap: 40px;
+          display: flex; align-items: center; justify-content: space-between; gap: 40px;
         }
         .hero-text { max-width: 560px; }
         .hero-bowl { flex-shrink: 0; width: 320px; animation: floatBowl 4s ease-in-out infinite; }
@@ -294,8 +354,8 @@ export default function Home() {
 
         .pilares-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .destacados-header {
-          display: flex; justify-content: space-between;
-          align-items: flex-end; margin-bottom: 40px; flex-wrap: wrap; gap: 16px;
+          display: flex; justify-content: space-between; align-items: flex-end;
+          margin-bottom: 40px; flex-wrap: wrap; gap: 16px;
         }
         .destacados-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .testimonios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -322,9 +382,7 @@ export default function Home() {
           .section-pilares, .section-destacados, .section-testimonios { padding: 56px 20px; }
           .section-cta { padding: 64px 20px; }
         }
-        @media (max-width: 380px) {
-          .hero-bowl { width: 140px; top: 90px; right: 12px; }
-        }
+        @media (max-width: 380px) { .hero-bowl { width: 140px; top: 90px; right: 12px; } }
       `}</style>
     </>
   );

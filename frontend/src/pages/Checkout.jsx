@@ -44,7 +44,6 @@ export default function Checkout() {
     direccion: "",
   });
 
-
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -118,10 +117,7 @@ export default function Checkout() {
   };
 
   const handleSubmit = async () => {
-
-
     try {
-
       const e = validate();
       if (Object.keys(e).length > 0) {
         setErrors(e);
@@ -130,8 +126,8 @@ export default function Checkout() {
 
       setLoading(true);
 
-      // Mock del pedido — cuando el backend esté listo, reemplazar por fetch real
-      const pedido = {
+      // Crear pedido en el backend
+      const pedidoData = {
         nombre: form.nombre,
         numero: form.numero,
         direccion: form.direccion,
@@ -139,45 +135,50 @@ export default function Checkout() {
           productoId: i._id,
           nombre: i.nombre,
           cantidad: i.qty,
-          precio: i.precio
+          precio: i.precio,
         })),
         total,
       };
-      console.log("Pedido a enviar:", pedido);
 
-      const respuesta = await fetch("http://localhost:3000/api/pedidos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(pedido)
-      });
+      const respuesta = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/pedidos`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(pedidoData),
+        },
+      );
       const data = await respuesta.json();
-      const numeroPedido = data.codigo
 
       setLoading(false);
- 
+      clearCart();
 
-
-      const mensaje = `Hola! Soy ${form.nombre}
-Quiero hacer un pedido:
-
-${items.map(i => `- ${i.nombre} x${i.qty} - ₡${(i.precio * i.qty).toLocaleString()}`).join('\n')}
-
-Total: ₡${total.toLocaleString()}
-Dirección: ${form.direccion}
-Código: ${data.codigo}
-
-Espero confirmación antes de realizar el Sinpe 🙏`
-
-      const urlWsp = `https://wa.me/50664406338?text=${encodeURIComponent(mensaje)}`
-      window.open(urlWsp, '_blank')
-
-     clearCart();
-      navigate("/pago", { state: { pedido: { ...pedido, numeroPedido } } });
+      // Navegar a Sinpe con los datos del pedido
+      // El WhatsApp se abre desde Confirmacion al final del flujo
+      navigate("/pago", {
+        state: {
+          pedido: {
+            pedidoId: data._id, // ID real del pedido en BD
+            numeroPedido: data.codigo, // código GRM-XXXXXX
+            nombre: form.nombre,
+            numero: form.numero,
+            direccion: form.direccion,
+            items: items.map((i) => ({
+              nombre: i.nombre,
+              cantidad: i.qty,
+              precio: i.precio * i.qty,
+            })),
+            total,
+          },
+        },
+      });
     } catch (error) {
-      console.error("Error:", error)
-      setLoading(false)
+      console.error("Error al procesar el pedido:", error);
+      setLoading(false);
+      alert(
+        "Hubo un error al procesar tu pedido. Por favor, intentá de nuevo.",
+      );
     }
-
   };
 
   return (
@@ -248,14 +249,14 @@ Espero confirmación antes de realizar el Sinpe 🙏`
                   placeholder="Ej: María García"
                   style={inputStyle(errors.nombre)}
                   onFocus={(e) =>
-                  (e.target.style.borderColor = errors.nombre
-                    ? "#f0493f"
-                    : "rgba(240,73,63,0.5)")
+                    (e.target.style.borderColor = errors.nombre
+                      ? "#f0493f"
+                      : "rgba(240,73,63,0.5)")
                   }
                   onBlur={(e) =>
-                  (e.target.style.borderColor = errors.nombre
-                    ? "#f0493f"
-                    : "rgba(238,238,238,0.1)")
+                    (e.target.style.borderColor = errors.nombre
+                      ? "#f0493f"
+                      : "rgba(238,238,238,0.1)")
                   }
                 />
                 {errors.nombre && <p style={errorStyle}>{errors.nombre}</p>}
@@ -289,14 +290,14 @@ Espero confirmación antes de realizar el Sinpe 🙏`
                     lineHeight: 1.6,
                   }}
                   onFocus={(e) =>
-                  (e.target.style.borderColor = errors.direccion
-                    ? "#f0493f"
-                    : "rgba(240,73,63,0.5)")
+                    (e.target.style.borderColor = errors.direccion
+                      ? "#f0493f"
+                      : "rgba(240,73,63,0.5)")
                   }
                   onBlur={(e) =>
-                  (e.target.style.borderColor = errors.direccion
-                    ? "#f0493f"
-                    : "rgba(238,238,238,0.1)")
+                    (e.target.style.borderColor = errors.direccion
+                      ? "#f0493f"
+                      : "rgba(238,238,238,0.1)")
                   }
                 />
                 {errors.direccion && (
@@ -360,7 +361,7 @@ Espero confirmación antes de realizar el Sinpe 🙏`
 
             {items.map((item) => (
               <div
-                key={item.name}
+                key={item.nombre}
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -377,7 +378,7 @@ Espero confirmación antes de realizar el Sinpe 🙏`
                       margin: 0,
                     }}
                   >
-                    {item.name}
+                    {item.nombre}
                   </p>
                   <p
                     style={{
