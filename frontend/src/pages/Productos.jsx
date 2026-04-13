@@ -3,8 +3,6 @@ import ProductModal from "../components/ProductModal";
 
 const API = import.meta.env.VITE_API_URL;
 
-// Un producto aparece en el catálogo público si está activo
-// y cumple la condición de su tipo
 const esVisibleEnPublico = (p) => {
   if (!p.activo) return false;
   if (p.tipo === 'tiempo_limitado') {
@@ -15,7 +13,6 @@ const esVisibleEnPublico = (p) => {
   return true;
 };
 
-// Producto por stock agotado — se muestra pero bloqueado
 const estaAgotado = (p) => p.tipo === 'stock' && p.stock === 0;
 
 export default function Productos() {
@@ -35,8 +32,6 @@ export default function Productos() {
   };
 
   const visibles = productos.filter(esVisibleEnPublico);
-
-  // Separar en dos grupos
   const limitados = visibles.filter(p => p.tipo === 'tiempo_limitado');
   const normales = visibles.filter(p => p.tipo === 'stock');
 
@@ -90,17 +85,17 @@ export default function Productos() {
               }}>Disponibles por tiempo limitado — no te los pierdas</p>
             </div>
 
-            {/* Cards anchas */}
+            {/* Cards de tiempo limitado — ahora con fondo claro */}
             <div className="limitados-grid">
               {limitados.map((p) => (
                 <div key={p._id} className="product-card-limitado"
                   onClick={() => setSelected(p)}>
 
-                  {/* Imagen */}
+                  {/* Imagen — fondo claro igual que las de stock */}
                   <div className="limitado-image-area">
                     <div style={{
                       position: 'absolute', width: 140, height: 140, borderRadius: '50%',
-                      background: 'radial-gradient(circle, rgba(63,169,240,0.2), transparent 70%)',
+                      background: 'radial-gradient(circle, rgba(240,73,63,0.12), transparent 70%)',
                       pointerEvents: 'none',
                     }} />
                     <img src={p.imagen} alt={p.nombre}
@@ -121,40 +116,39 @@ export default function Productos() {
                       <h2 style={{
                         fontFamily: 'Montserrat', fontWeight: 900,
                         fontSize: 'clamp(1.2rem, 2vw, 1.6rem)',
-                        letterSpacing: '-0.02em', color: '#eeeeee',
+                        letterSpacing: '-0.02em', color: '#202020',
                         lineHeight: 1.1, marginBottom: 6,
                       }}>{p.nombre}</h2>
-                      {/* Peso si existe */}
                       {p.peso && (
                         <span style={{
-                          fontFamily: 'Montserrat', fontWeight: 600, fontSize: '0.72rem',
+                          fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.72rem',
                           letterSpacing: '0.1em', textTransform: 'uppercase',
-                          color: 'rgba(63,169,240,0.7)', display: 'block', marginBottom: 10,
+                          color: 'rgba(32,32,32,0.5)', display: 'block', marginBottom: 10,
                         }}>{p.peso}</span>
                       )}
                       <p style={{
                         fontFamily: 'Poppins', fontWeight: 300, fontSize: '0.92rem',
-                        color: 'rgba(238,238,238,0.55)', lineHeight: 1.7,
+                        color: 'rgba(32,32,32,0.65)', lineHeight: 1.7,
                       }}>{p.descripcion}</p>
                     </div>
-                    <div style={{ height: 1, background: 'rgba(238,238,238,0.08)', margin: '16px 0' }} />
+                    <div style={{ height: 1, background: 'rgba(32,32,32,0.12)', margin: '16px 0' }} />
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
                       <span style={{
                         fontFamily: 'Montserrat', fontWeight: 900,
-                        fontSize: '1.5rem', color: '#3fa9f0',
+                        fontSize: '1.5rem', color: '#f0493f',
                       }}>₡{p.precio.toLocaleString()}</span>
                       <button
                         onClick={(e) => { e.stopPropagation(); setSelected(p); }}
                         style={{
-                          background: '#3fa9f0', color: '#fff', border: 'none',
+                          background: '#f0493f', color: '#fff', border: 'none',
                           padding: '12px 24px', borderRadius: 2,
                           fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.8rem',
                           letterSpacing: '0.1em', textTransform: 'uppercase',
                           cursor: 'pointer', transition: 'all 0.2s',
                           display: 'flex', alignItems: 'center', gap: 8,
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.background = '#eeeeee'; e.currentTarget.style.color = '#272727'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = '#3fa9f0'; e.currentTarget.style.color = '#fff'; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#272727'; e.currentTarget.style.color = '#fff'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = '#f0493f'; e.currentTarget.style.color = '#fff'; }}
                       >
                         <i className="fa-solid fa-cart-shopping" />
                         Pedir ahora
@@ -197,7 +191,6 @@ export default function Productos() {
                     <img src={p.imagen} alt={p.nombre} className="product-img"
                       style={{ opacity: agotado ? 0.4 : 1 }} />
 
-                    {/* Overlay agotado */}
                     {agotado && (
                       <div style={{
                         position: 'absolute', inset: 0, zIndex: 2,
@@ -218,11 +211,9 @@ export default function Productos() {
                   <div className="product-info-area">
                     <div style={{ flex: 1 }}>
                       <h2 className="product-name">{p.nombre}</h2>
-                      {/* Peso si existe */}
                       {p.peso && (
                         <span className="product-weight">{p.peso}</span>
                       )}
-                      {/* Estado de stock */}
                       {p.tipo === 'stock' && (
                         <span className="product-weight" style={{
                           color: agotado ? '#f0493f' : 'rgba(32,32,32,0.4)',
@@ -250,7 +241,6 @@ export default function Productos() {
         </>
       )}
 
-      {/* Estado vacío */}
       {visibles.length === 0 && (
         <div style={{ textAlign: 'center', padding: '80px 40px' }}>
           <p style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '1.1rem', color: 'rgba(238,238,238,0.3)' }}>
@@ -274,10 +264,10 @@ export default function Productos() {
           text-align: right; line-height: 1.7;
         }
 
-        /* Sección tiempo limitado */
+        /* Sección tiempo limitado — fondo neutro para que las cards claras resalten */
         .section-limitados {
-          background: linear-gradient(180deg, rgba(63,169,240,0.04) 0%, transparent 100%);
-          border-bottom: 1px solid rgba(63,169,240,0.1);
+          background: rgba(238,238,238,0.02);
+          border-bottom: 1px solid rgba(238,238,238,0.07);
           padding: 56px 0;
         }
         .limitados-inner {
@@ -286,26 +276,29 @@ export default function Productos() {
         .limitados-grid {
           display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
         }
+
+        /* Card tiempo limitado — ahora clara igual que las de stock */
         .product-card-limitado {
           display: flex; flex-direction: row;
-          background: #272727; border-radius: 8px; overflow: hidden;
-          border: 1px solid rgba(63,169,240,0.15);
+          background: #eeeeee; border-radius: 6px; overflow: hidden;
+          border: 1px solid rgba(0,0,0,0.06);
           transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
           cursor: pointer; min-height: 200px;
         }
         .product-card-limitado:hover {
           transform: translateY(-4px);
           box-shadow: 0 20px 48px rgba(0,0,0,0.4);
-          border-color: rgba(63,169,240,0.4);
+          border-color: rgba(240,73,63,0.4);
         }
         .limitado-image-area {
           width: 220px; flex-shrink: 0;
-          background: linear-gradient(160deg, #2a2a2a, #1e1e1e);
+          background: linear-gradient(160deg, #e0e0e0, #d4d4d4);
           display: flex; align-items: center; justify-content: center;
           position: relative; overflow: hidden;
         }
         .limitado-info-area {
           padding: 24px 28px; display: flex; flex-direction: column; flex: 1;
+          background: #eeeeee;
         }
 
         /* Grid catálogo normal */
@@ -395,7 +388,6 @@ export default function Productos() {
   );
 }
 
-// Componente de cuenta regresiva — actualiza cada minuto
 function CountdownBadge({ fechaFin }) {
   const [texto, setTexto] = useState('');
 
@@ -421,7 +413,7 @@ function CountdownBadge({ fechaFin }) {
     <div style={{
       position: 'absolute', bottom: 10, left: '50%',
       transform: 'translateX(-50%)',
-      background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)',
+      background: 'rgba(32,32,32,0.75)', backdropFilter: 'blur(4px)',
       color: '#3fa9f0', fontFamily: 'Montserrat', fontWeight: 700,
       fontSize: '0.65rem', letterSpacing: '0.08em',
       padding: '4px 10px', borderRadius: 3, whiteSpace: 'nowrap',

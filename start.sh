@@ -56,7 +56,7 @@ if [ ! -d "$SERVER_DIR/node_modules" ]; then
   echo "   Instalando dependencias del backend..."
   cd "$SERVER_DIR" && npm install --silent
 fi
-cd "$SERVER_DIR" && npm run dev &
+cd "$SERVER_DIR" && npm run dev -- --host &
 BACKEND_PID=$!
 echo "   ✅ Backend corriendo (PID: $BACKEND_PID)"
 
@@ -71,7 +71,7 @@ if [ ! -d "$FRONTEND_DIR/node_modules" ]; then
   echo "   Instalando dependencias del frontend..."
   cd "$FRONTEND_DIR" && npm install --silent
 fi
-cd "$FRONTEND_DIR" && npm run dev &
+cd "$FRONTEND_DIR" && npm run dev -- --host &
 FRONTEND_PID=$!
 echo "   ✅ Frontend corriendo (PID: $FRONTEND_PID)"
 

@@ -9,7 +9,6 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Si ya está autenticado, redirigir directo al dashboard
   useEffect(() => {
     if (isAuth) navigate('/admin/dashboard');
   }, [isAuth, navigate]);
@@ -22,10 +21,9 @@ export default function AdminLogin() {
     setLoading(true);
     setError('');
     try {
-      // Login real contra el backend — acepta username o email
       await loginWithBackend(form.identifier, form.password);
       navigate('/admin/dashboard');
-    } catch (e) {
+    } catch {
       setError('Credenciales incorrectas.');
     } finally {
       setLoading(false);
@@ -41,7 +39,7 @@ export default function AdminLogin() {
       <div style={{ width: '100%', maxWidth: 400 }}>
 
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <img src="/images/logo.png" alt="Gourmetto"
             style={{ height: 36, objectFit: 'contain', marginBottom: 16 }} />
           <p style={{
@@ -51,25 +49,24 @@ export default function AdminLogin() {
           }}>Panel de administración</p>
         </div>
 
-        {/* Card de login */}
+        {/* Card */}
         <div style={{
           background: '#272727', borderRadius: 8,
           border: '1px solid rgba(238,238,238,0.06)',
-          padding: '36px 32px',
+          padding: 'clamp(24px, 6vw, 36px) clamp(20px, 6vw, 32px)',
         }}>
           <h1 style={{
             fontFamily: 'Montserrat', fontWeight: 900,
-            fontSize: '1.6rem', letterSpacing: '-0.03em',
-            color: '#eeeeee', marginBottom: 32,
+            fontSize: 'clamp(1.3rem, 5vw, 1.6rem)', letterSpacing: '-0.03em',
+            color: '#eeeeee', marginBottom: 28,
           }}>Iniciar sesión</h1>
 
           {/* Usuario o email */}
-          <div style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 18 }}>
             <label style={{
-              fontFamily: 'Montserrat', fontWeight: 700,
-              fontSize: '0.68rem', letterSpacing: '0.12em',
-              textTransform: 'uppercase', color: 'rgba(238,238,238,0.4)',
-              display: 'block', marginBottom: 8,
+              fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.68rem',
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+              color: 'rgba(238,238,238,0.4)', display: 'block', marginBottom: 8,
             }}>Usuario o email</label>
             <input
               value={form.identifier}
@@ -90,12 +87,11 @@ export default function AdminLogin() {
           </div>
 
           {/* Contraseña */}
-          <div style={{ marginBottom: 28 }}>
+          <div style={{ marginBottom: error ? 12 : 24 }}>
             <label style={{
-              fontFamily: 'Montserrat', fontWeight: 700,
-              fontSize: '0.68rem', letterSpacing: '0.12em',
-              textTransform: 'uppercase', color: 'rgba(238,238,238,0.4)',
-              display: 'block', marginBottom: 8,
+              fontFamily: 'Montserrat', fontWeight: 700, fontSize: '0.68rem',
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+              color: 'rgba(238,238,238,0.4)', display: 'block', marginBottom: 8,
             }}>Contraseña</label>
             <input
               type="password"
@@ -116,15 +112,10 @@ export default function AdminLogin() {
             />
           </div>
 
-          {/* Mensaje de error */}
           {error && (
-            <p style={{
-              fontFamily: 'Poppins', fontSize: '0.82rem',
-              color: '#f0493f', marginBottom: 20, marginTop: -12,
-            }}>{error}</p>
+            <p style={{ fontFamily: 'Poppins', fontSize: '0.82rem', color: '#f0493f', marginBottom: 18 }}>{error}</p>
           )}
 
-          {/* Botón submit */}
           <button
             onClick={handleSubmit}
             disabled={loading}
@@ -132,9 +123,8 @@ export default function AdminLogin() {
               width: '100%', background: loading ? '#444' : '#f0493f',
               color: '#fff', border: 'none', padding: '14px',
               borderRadius: 2, fontFamily: 'Montserrat', fontWeight: 700,
-              fontSize: '0.85rem', letterSpacing: '0.1em',
-              textTransform: 'uppercase', cursor: loading ? 'not-allowed' : 'pointer',
-              transition: 'all 0.2s',
+              fontSize: '0.85rem', letterSpacing: '0.1em', textTransform: 'uppercase',
+              cursor: loading ? 'not-allowed' : 'pointer', transition: 'all 0.2s',
             }}
             onMouseEnter={e => { if (!loading) { e.target.style.background = '#eeeeee'; e.target.style.color = '#272727'; } }}
             onMouseLeave={e => { if (!loading) { e.target.style.background = '#f0493f'; e.target.style.color = '#fff'; } }}
@@ -144,7 +134,7 @@ export default function AdminLogin() {
         </div>
 
         <p style={{
-          textAlign: 'center', marginTop: 24,
+          textAlign: 'center', marginTop: 20,
           fontFamily: 'Montserrat', fontSize: '0.72rem',
           color: 'rgba(238,238,238,0.15)', letterSpacing: '0.05em',
         }}>
